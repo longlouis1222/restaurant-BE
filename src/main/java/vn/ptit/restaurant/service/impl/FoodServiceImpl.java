@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.ptit.restaurant.dto.FoodRequest;
 import vn.ptit.restaurant.dto.FoodResponse;
-import vn.ptit.restaurant.entity.Food;
+import vn.ptit.restaurant.entity.NvPhucVu;
 import vn.ptit.restaurant.exception.ResourceNotFoundException;
 import vn.ptit.restaurant.repository.FoodRepository;
 import vn.ptit.restaurant.service.FoodService;
@@ -20,14 +20,14 @@ public class FoodServiceImpl implements FoodService {
 
     @Override
     public FoodResponse create(FoodRequest request) {
-        Food food = Food.builder()
+        NvPhucVu NVPhucVu = NVPhucVu.builder()
                 .name(request.getName())
                 .price(request.getPrice())
                 .imageUrl(request.getImageUrl())
                 .available(true)
                 .build();
 
-        Food saved = repository.save(food);
+        NvPhucVu saved = repository.save(NVPhucVu);
 
         return mapToResponse(saved);
     }
@@ -42,19 +42,19 @@ public class FoodServiceImpl implements FoodService {
 
     @Override
     public FoodResponse getById(Long id) {
-        Food food = repository.findById(id)
+        NvPhucVu NVPhucVu = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Food not found"));
 
-        return mapToResponse(food);
+        return mapToResponse(NVPhucVu);
     }
 
-    private FoodResponse mapToResponse(Food food) {
+    private FoodResponse mapToResponse(NvPhucVu NVPhucVu) {
         return FoodResponse.builder()
-                .id(food.getId())
-                .name(food.getName())
-                .price(food.getPrice())
-                .imageUrl(food.getImageUrl())
-                .available(food.getAvailable())
+                .id(NVPhucVu.getId())
+                .name(NVPhucVu.getName())
+                .price(NVPhucVu.getPrice())
+                .imageUrl(NVPhucVu.getImageUrl())
+                .available(NVPhucVu.getAvailable())
                 .build();
     }
 }
