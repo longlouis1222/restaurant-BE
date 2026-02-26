@@ -5,10 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "hoa_don")
@@ -34,7 +33,12 @@ public class HoaDon {
     @JoinColumn(name = "ma_nhan_vien")
     private NhanVien nhanVien;
 
-    private java.time.LocalDateTime ngayLap;
+    @Column(name = "ngay_lap")
+    private LocalDateTime ngayLap;
 
-    private java.math.BigDecimal tongTien;
+    @Column(name = "tong_tien")
+    private BigDecimal tongTien;
+
+    @Column(name = "trang_thai")
+    private String trangThai;
 }

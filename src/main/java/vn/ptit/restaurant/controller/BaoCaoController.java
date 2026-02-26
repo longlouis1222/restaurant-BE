@@ -1,0 +1,50 @@
+package vn.ptit.restaurant.controller;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import vn.ptit.restaurant.dto.*;
+import vn.ptit.restaurant.dto.response.DoanhThuResponse;
+import vn.ptit.restaurant.dto.response.DoanhThuTheoNgayResponse;
+import vn.ptit.restaurant.dto.response.DoanhThuTheoThangResponse;
+import vn.ptit.restaurant.service.BaoCaoService;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/bao-cao")
+@RequiredArgsConstructor
+public class BaoCaoController {
+
+    private final BaoCaoService baoCaoService;
+
+    @GetMapping("/tong-doanh-thu")
+    public ResponseEntity<DoanhThuResponse> tongDoanhThu(
+            @RequestParam LocalDateTime tuNgay,
+            @RequestParam LocalDateTime denNgay) {
+
+        return ResponseEntity.ok(
+                baoCaoService.tinhTongDoanhThu(tuNgay, denNgay)
+        );
+    }
+
+    @GetMapping("/theo-ngay")
+    public ResponseEntity<List<DoanhThuTheoNgayResponse>> theoNgay(
+            @RequestParam LocalDateTime tuNgay,
+            @RequestParam LocalDateTime denNgay) {
+
+        return ResponseEntity.ok(
+                baoCaoService.doanhThuTheoNgay(tuNgay, denNgay)
+        );
+    }
+
+    @GetMapping("/theo-thang")
+    public ResponseEntity<List<DoanhThuTheoThangResponse>> theoThang(
+            @RequestParam int nam) {
+
+        return ResponseEntity.ok(
+                baoCaoService.doanhThuTheoThang(nam)
+        );
+    }
+}
