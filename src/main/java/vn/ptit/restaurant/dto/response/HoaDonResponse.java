@@ -6,9 +6,10 @@ import java.util.List;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class HoaDonResponse {
 
-    private String id;
     private String maHoaDon;
     private BigDecimal tongTien;
     private String trangThai;

@@ -24,5 +24,12 @@ public class BanAn {
     private Integer soCho;
 
     private String khuVuc;
-    private String trangThai;
+
+    @Enumerated(EnumType.STRING)
+    private TrangThaiBan trangThai;
+
+    public enum TrangThaiBan {
+        AVAILABLE,
+        OCCUPIED
+    }
 }

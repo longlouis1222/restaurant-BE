@@ -11,4 +11,9 @@ import java.time.LocalDate;
 public class DoanhThuTheoNgayResponse {
     private LocalDate ngay;
     private BigDecimal doanhThu;
+
+//    public DoanhThuTheoNgayResponse(java.sql.Date ngay, BigDecimal doanhThu) {
+//        this.ngay = ngay.toLocalDate();
+//        this.doanhThu = doanhThu;
+//    }
 }

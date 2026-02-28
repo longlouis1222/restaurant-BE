@@ -29,15 +29,15 @@ public class BaoCaoController {
         );
     }
 
-    @GetMapping("/theo-ngay")
-    public ResponseEntity<List<DoanhThuTheoNgayResponse>> theoNgay(
-            @RequestParam LocalDateTime tuNgay,
-            @RequestParam LocalDateTime denNgay) {
-
-        return ResponseEntity.ok(
-                baoCaoService.doanhThuTheoNgay(tuNgay, denNgay)
-        );
-    }
+//    @GetMapping("/theo-ngay")
+//    public ResponseEntity<List<DoanhThuTheoNgayResponse>> theoNgay(
+//            @RequestParam LocalDateTime tuNgay,
+//            @RequestParam LocalDateTime denNgay) {
+//
+//        return ResponseEntity.ok(
+//                baoCaoService.doanhThuTheoNgay(tuNgay, denNgay)
+//        );
+//    }
 
     @GetMapping("/theo-thang")
     public ResponseEntity<List<DoanhThuTheoThangResponse>> theoThang(

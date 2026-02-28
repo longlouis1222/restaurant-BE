@@ -31,9 +31,9 @@ public class HoaDonController {
     }
 
     @PutMapping("/{id}/thanh-toan")
-    public ResponseEntity<ApiResponse<?>> thanhToan(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<?>> thanhToan(@PathVariable String maHoaDon) {
 
-        hoaDonService.thanhToan(id);
+        hoaDonService.thanhToan(maHoaDon);
 
         return ResponseEntity.ok(
                 ApiResponse.builder()

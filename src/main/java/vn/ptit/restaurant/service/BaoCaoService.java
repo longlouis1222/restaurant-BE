@@ -12,7 +12,7 @@ public interface BaoCaoService {
 
     DoanhThuResponse tinhTongDoanhThu(LocalDateTime tuNgay, LocalDateTime denNgay);
 
-    List<DoanhThuTheoNgayResponse> doanhThuTheoNgay(LocalDateTime tuNgay, LocalDateTime denNgay);
-
+//    List<DoanhThuTheoNgayResponse> doanhThuTheoNgay(LocalDateTime tuNgay, LocalDateTime denNgay);
+//
     List<DoanhThuTheoThangResponse> doanhThuTheoThang(int nam);
 }

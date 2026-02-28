@@ -13,36 +13,36 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface HoaDonRepository
-        extends JpaRepository<HoaDon, Long>,
+        extends JpaRepository<HoaDon, String>,
         JpaSpecificationExecutor<HoaDon> {
 
     @Query("SELECT COALESCE(SUM(h.tongTien), 0) " +
             "FROM HoaDon h " +
-            "WHERE h.ngayTao BETWEEN :tuNgay AND :denNgay")
+            "WHERE h.ngayLap BETWEEN :tuNgay AND :denNgay")
     BigDecimal tinhTongDoanhThu(
             @Param("tuNgay") LocalDateTime tuNgay,
             @Param("denNgay") LocalDateTime denNgay
     );
 
-    @Query("SELECT new vn.ptit.restaurant.dto.response.DoanhThuTheoNgayResponse(" +
-            "FUNCTION('DATE', h.ngayTao), " +
-            "COALESCE(SUM(h.tongTien), 0)) " +
-            "FROM HoaDon h " +
-            "WHERE h.ngayTao BETWEEN :tuNgay AND :denNgay " +
-            "GROUP BY FUNCTION('DATE', h.ngayTao) " +
-            "ORDER BY FUNCTION('DATE', h.ngayTao)")
-    List<DoanhThuTheoNgayResponse> doanhThuTheoNgay(
-            @Param("tuNgay") LocalDateTime tuNgay,
-            @Param("denNgay") LocalDateTime denNgay
-    );
+//    @Query("SELECT new vn.ptit.restaurant.dto.response.DoanhThuTheoNgayResponse(" +
+//            "FUNCTION('DATE', h.ngayLap), " +
+//            "COALESCE(SUM(h.tongTien), 0)) " +
+//            "FROM HoaDon h " +
+//            "WHERE h.ngayLap BETWEEN :tuNgay AND :denNgay " +
+//            "GROUP BY FUNCTION('DATE', h.ngayLap) " +
+//            "ORDER BY FUNCTION('DATE', h.ngayLap)")
+//    List<DoanhThuTheoNgayResponse> doanhThuTheoNgay(
+//            @Param("tuNgay") LocalDateTime tuNgay,
+//            @Param("denNgay") LocalDateTime denNgay
+//    );
 
     @Query("SELECT new vn.ptit.restaurant.dto.response.DoanhThuTheoThangResponse(" +
-            "FUNCTION('MONTH', h.ngayTao), " +
+            "FUNCTION('MONTH', h.ngayLap), " +
             "COALESCE(SUM(h.tongTien), 0)) " +
             "FROM HoaDon h " +
-            "WHERE FUNCTION('YEAR', h.ngayTao) = :nam " +
-            "GROUP BY FUNCTION('MONTH', h.ngayTao) " +
-            "ORDER BY FUNCTION('MONTH', h.ngayTao)")
+            "WHERE FUNCTION('YEAR', h.ngayLap) = :nam " +
+            "GROUP BY FUNCTION('MONTH', h.ngayLap) " +
+            "ORDER BY FUNCTION('MONTH', h.ngayLap)")
     List<DoanhThuTheoThangResponse> doanhThuTheoThang(
             @Param("nam") int nam
     );

@@ -9,7 +9,7 @@ public interface HoaDonService {
 
     HoaDonResponse taoHoaDon(TaoHoaDonRequest request);
 
-    void thanhToan(Long hoaDonId);
+    void thanhToan(String maHoaDon);
 
     PageResponse<HoaDonResponse> search(HoaDonSearchRequest request);
 }

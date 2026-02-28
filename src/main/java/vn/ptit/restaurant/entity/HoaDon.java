@@ -39,6 +39,13 @@ public class HoaDon {
     @Column(name = "tong_tien")
     private BigDecimal tongTien;
 
-    @Column(name = "trang_thai")
-    private String trangThai;
+    @Enumerated(EnumType.STRING)
+    private TrangThaiHoaDon trangThai;
+
+    // ================= ENUM =================
+    public enum TrangThaiHoaDon {
+        NEW,        // Mới tạo
+        PAID,       // Đã thanh toán
+        CANCELLED   // Đã hủy
+    }
 }
