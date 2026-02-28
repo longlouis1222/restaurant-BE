@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import vn.ptit.restaurant.entity.base.BaseEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,7 +17,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class NhomMonAn {
+public class NhomMonAn extends BaseEntity {
 
     @Id
     @Column(name = "ma_nhom_mon")
