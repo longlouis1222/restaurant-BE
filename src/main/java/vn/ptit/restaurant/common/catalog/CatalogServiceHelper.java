@@ -16,8 +16,12 @@ import java.util.stream.Collectors;
 public class CatalogServiceHelper {
 
     public static Pageable toPageable(BaseSearchRequest req) {
+        String sortBy = req.getSortBy();
+        if (sortBy == null || sortBy.trim().isEmpty()) {
+            sortBy = "id";
+        }
         Sort sort = req.getSortDir().equalsIgnoreCase("asc") ?
-                Sort.by(req.getSortBy()).ascending() : Sort.by(req.getSortBy()).descending();
+                Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         return PageRequest.of(req.getPage(), req.getSize(), sort);
     }
 
@@ -33,17 +37,16 @@ public class CatalogServiceHelper {
     }
 
     public static <T> Specification<T> buildLikeSpecification(String q, String... fields) {
+        if (q == null || q.trim().isEmpty() || fields == null || fields.length == 0) {
+            return null; // no filtering
+        }
+        final String like = "%" + q.trim().toLowerCase() + "%";
         return (root, query, cb) -> {
-            List<Predicate> preds = new ArrayList<>();
-            if (q != null && !q.trim().isEmpty()) {
-                String like = "%" + q.trim().toLowerCase() + "%";
-                List<Predicate> orPreds = new ArrayList<>();
-                for (String f : fields) {
-                    orPreds.add(cb.like(cb.lower(root.get(f).as(String.class)), like));
-                }
-                preds.add(cb.or(orPreds.toArray(new Predicate[0])));
+            List<Predicate> orPreds = new ArrayList<>();
+            for (String f : fields) {
+                orPreds.add(cb.like(cb.lower(root.get(f).as(String.class)), like));
             }
-            return cb.and(preds.toArray(new Predicate[0]));
+            return cb.or(orPreds.toArray(new Predicate[0]));
         };
     }
 }

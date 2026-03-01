@@ -19,6 +19,9 @@ public class ChucVu {
     @Column(name = "ten_chuc_vu", nullable = false)
     private String tenChucVu;
 
+    @Column(name = "ma_luong", nullable = false)
+    private String maLuong;
+
     @OneToMany(mappedBy = "chucVu")
     private List<NhanVien> nhanViens;
 }

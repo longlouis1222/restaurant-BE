@@ -25,6 +25,8 @@ public class BanAn {
 
     private String khuVuc;
 
+    private Integer tanSuatSuDung;
+
     @Enumerated(EnumType.STRING)
     private TrangThaiBan trangThai;
 

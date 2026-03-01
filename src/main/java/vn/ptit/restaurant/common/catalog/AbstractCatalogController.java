@@ -27,7 +27,7 @@ public abstract class AbstractCatalogController<ID, CreateReq, UpdateReq, Resp, 
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Resp>> update(@PathVariable("id") ID id, @RequestBody UpdateReq request) {
+    public ResponseEntity<ApiResponse<Resp>> update(@PathVariable("id") ID id, @Validated @RequestBody UpdateReq request) {
         Resp res = service.update(id, request);
         return ResponseEntity.ok(ApiResponse.<Resp>builder().success(true).message("Cập nhật thành công").data(res).build());
     }
@@ -45,13 +45,14 @@ public abstract class AbstractCatalogController<ID, CreateReq, UpdateReq, Resp, 
     }
 
     @GetMapping
-    public ResponseEntity<List<Resp>> getAll() {
+    public ResponseEntity<ApiResponse<List<Resp>>> getAll() {
         List<Resp> list = service.getAll();
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(ApiResponse.<List<Resp>>builder().success(true).data(list).build());
     }
 
     @PostMapping("/search")
-    public ResponseEntity<PageResponse<Resp>> search(@RequestBody SearchReq request) {
-        return ResponseEntity.ok(service.search(request));
+    public ResponseEntity<ApiResponse<PageResponse<Resp>>> search(@Validated @RequestBody SearchReq request) {
+        PageResponse<Resp> page = service.search(request);
+        return ResponseEntity.ok(ApiResponse.<PageResponse<Resp>>builder().success(true).data(page).build());
     }
 }

@@ -1,32 +1,25 @@
-package vn.ptit.restaurant.entity;
+package vn.ptit.restaurant.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import java.time.LocalDate;
 
-@Entity
-@Table(name = "khach_hang")
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-public class KhachHang {
-
-    @Id
-    @Column(name = "ma_khach_hang")
+@AllArgsConstructor
+@NoArgsConstructor
+public class KhachHangRequest {
     private String maKhachHang;
 
-    @Column(nullable = false)
+    @NotBlank
     private String tenKhachHang;
 
     private String sdt;
-
     private String diaChi;
-
-    private java.time.LocalDate ngaySinh;
-
+    private LocalDate ngaySinh;
     private java.math.BigDecimal diemTichLuy;
 }
