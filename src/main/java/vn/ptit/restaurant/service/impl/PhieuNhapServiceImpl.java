@@ -18,6 +18,7 @@ import vn.ptit.restaurant.repository.NhaCungCapRepository;
 import vn.ptit.restaurant.repository.NhanVienRepository;
 import vn.ptit.restaurant.repository.ChiTietPhieuNhapRepository;
 import vn.ptit.restaurant.service.PhieuNhapService;
+import vn.ptit.restaurant.exception.NotFoundException;
 
 import java.util.stream.Collectors;
 import java.util.List;
@@ -55,10 +56,18 @@ public class PhieuNhapServiceImpl extends AbstractCatalogService<
 
     @Override
     protected PhieuNhap createEntity(PhieuNhapRequest request, String id) {
+        // validate referenced entities when provided
+        if (request.getMaNcc() != null && !nhaCungCapRepository.existsById(request.getMaNcc())) {
+            throw new NotFoundException("NhaCungCap not found: " + request.getMaNcc());
+        }
+        if (request.getMaNhanVien() != null && !nhanVienRepository.existsById(request.getMaNhanVien())) {
+            throw new NotFoundException("NhanVien not found: " + request.getMaNhanVien());
+        }
+
         PhieuNhap p = PhieuNhap.builder()
                 .maPhieuNhap(id)
-                .nhaCungCap(nhaCungCapRepository.findById(request.getMaNcc()).orElse(null))
-                .nhanVien(nhanVienRepository.findById(request.getMaNhanVien()).orElse(null))
+                .nhaCungCap(request.getMaNcc() != null ? nhaCungCapRepository.findById(request.getMaNcc()).orElse(null) : null)
+                .nhanVien(request.getMaNhanVien() != null ? nhanVienRepository.findById(request.getMaNhanVien()).orElse(null) : null)
                 .ngayNhap(request.getNgayNhap())
                 .build();
 
@@ -68,6 +77,9 @@ public class PhieuNhapServiceImpl extends AbstractCatalogService<
         // save chi tiet
         if (request.getChiTietList() != null) {
             List<ChiTietPhieuNhap> cts = request.getChiTietList().stream().map(ct -> {
+                if (!nguyenLieuRepository.existsById(ct.getMaNguyenLieu())) {
+                    throw new NotFoundException("NguyenLieu not found: " + ct.getMaNguyenLieu());
+                }
                 ChiTietPhieuNhapId idct = new ChiTietPhieuNhapId(saved.getMaPhieuNhap(), ct.getMaNguyenLieu());
                 return ChiTietPhieuNhap.builder()
                         .id(idct)
@@ -85,10 +97,42 @@ public class PhieuNhapServiceImpl extends AbstractCatalogService<
 
     @Override
     protected void applyUpdate(PhieuNhap entity, PhieuNhapRequest request) {
-        if (request.getMaNcc() != null) entity.setNhaCungCap(nhaCungCapRepository.findById(request.getMaNcc()).orElse(null));
-        if (request.getMaNhanVien() != null) entity.setNhanVien(nhanVienRepository.findById(request.getMaNhanVien()).orElse(null));
+        if (request.getMaNcc() != null) {
+            if (!nhaCungCapRepository.existsById(request.getMaNcc())) {
+                throw new NotFoundException("NhaCungCap not found: " + request.getMaNcc());
+            }
+            entity.setNhaCungCap(nhaCungCapRepository.findById(request.getMaNcc()).orElse(null));
+        }
+        if (request.getMaNhanVien() != null) {
+            if (!nhanVienRepository.existsById(request.getMaNhanVien())) {
+                throw new NotFoundException("NhanVien not found: " + request.getMaNhanVien());
+            }
+            entity.setNhanVien(nhanVienRepository.findById(request.getMaNhanVien()).orElse(null));
+        }
         if (request.getNgayNhap() != null) entity.setNgayNhap(request.getNgayNhap());
-        // note: updating chi tiet not handled here (could be separate endpoint)
+
+        // handle updating chi tiet: replace existing details with provided list
+        if (request.getChiTietList() != null) {
+            // delete existing details for this phieu
+            chiTietPhieuNhapRepository.findByPhieuNhapMaPhieuNhap(entity.getMaPhieuNhap())
+                    .forEach(chiTietPhieuNhapRepository::delete);
+
+            // insert new details
+            List<ChiTietPhieuNhap> cts = request.getChiTietList().stream().map(ct -> {
+                if (!nguyenLieuRepository.existsById(ct.getMaNguyenLieu())) {
+                    throw new NotFoundException("NguyenLieu not found: " + ct.getMaNguyenLieu());
+                }
+                ChiTietPhieuNhapId idct = new ChiTietPhieuNhapId(entity.getMaPhieuNhap(), ct.getMaNguyenLieu());
+                return ChiTietPhieuNhap.builder()
+                        .id(idct)
+                        .phieuNhap(entity)
+                        .nguyenLieu(nguyenLieuRepository.findById(ct.getMaNguyenLieu()).orElse(null))
+                        .soLuong(ct.getSoLuong())
+                        .donGia(ct.getDonGia())
+                        .build();
+            }).collect(Collectors.toList());
+            chiTietPhieuNhapRepository.saveAll(cts);
+        }
     }
 
     @Override
