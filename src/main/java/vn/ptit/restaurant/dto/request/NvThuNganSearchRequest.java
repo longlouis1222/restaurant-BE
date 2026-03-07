@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 import vn.ptit.restaurant.common.catalog.BaseSearchRequest;
 
 @Data
-@Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class NvThuNganSearchRequest extends BaseSearchRequest {
 }
