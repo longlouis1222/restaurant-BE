@@ -1,0 +1,162 @@
+{
+  "info": {
+    "name": "Restaurant Order Flow",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Collection test luồng order bàn ăn: phục vụ -> bếp -> thu ngân"
+  },
+  "item": [
+    {
+      "name": "1. Tạo order cho bàn",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/nv-phuc-vu/orders?maBan={{maBan}}&maNhanVienPhucVu={{maNhanVienPhucVu}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nv-phuc-vu", "orders"],
+          "query": [
+            { "key": "maBan", "value": "{{maBan}}" },
+            { "key": "maNhanVienPhucVu", "value": "{{maNhanVienPhucVu}}" }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "[\n  { \"maMon\": \"M001\", \"soLuong\": 2 },\n  { \"maMon\": \"M002\", \"soLuong\": 1 }\n]"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2. Cập nhật order",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/nv-phuc-vu/orders/{{maHoaDon}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nv-phuc-vu", "orders", "{{maHoaDon}}"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "[\n  { \"maMon\": \"M001\", \"soLuong\": 1 },\n  { \"maMon\": \"M003\", \"soLuong\": 2 }\n]"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "3. Gửi order sang bếp",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{baseUrl}}/api/nv-phuc-vu/orders/{{maHoaDon}}/gui-bep?maNhanVienPhucVu={{maNhanVienPhucVu}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nv-phuc-vu", "orders", "{{maHoaDon}}", "gui-bep"],
+          "query": [
+            { "key": "maNhanVienPhucVu", "value": "{{maNhanVienPhucVu}}" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "4. Bếp - danh sách order chờ chế biến",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/nv-kho-bep/orders/cho-che-bien",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nv-kho-bep", "orders", "cho-che-bien"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "5. Bếp - hoàn thành order",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{baseUrl}}/api/nv-kho-bep/orders/{{maHoaDon}}/hoan-thanh?maNhanVienBep={{maNhanVienBep}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nv-kho-bep", "orders", "{{maHoaDon}}", "hoan-thanh"],
+          "query": [
+            { "key": "maNhanVienBep", "value": "{{maNhanVienBep}}" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "6. Phục vụ - xác nhận đã phục vụ",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{baseUrl}}/api/nv-phuc-vu/orders/{{maHoaDon}}/xac-nhan-phuc-vu?maNhanVienPhucVu={{maNhanVienPhucVu}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nv-phuc-vu", "orders", "{{maHoaDon}}", "xac-nhan-phuc-vu"],
+          "query": [
+            { "key": "maNhanVienPhucVu", "value": "{{maNhanVienPhucVu}}" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "7. Phục vụ - yêu cầu thanh toán",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{baseUrl}}/api/nv-phuc-vu/orders/{{maHoaDon}}/yeu-cau-thanh-toan?maNhanVienPhucVu={{maNhanVienPhucVu}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nv-phuc-vu", "orders", "{{maHoaDon}}", "yeu-cau-thanh-toan"],
+          "query": [
+            { "key": "maNhanVienPhucVu", "value": "{{maNhanVienPhucVu}}" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "8. Thu ngân - danh sách hóa đơn chờ thanh toán",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/nv-thu-ngan/bills/cho-thanh-toan?page=0&size=20",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nv-thu-ngan", "bills", "cho-thanh-toan"],
+          "query": [
+            { "key": "page", "value": "0" },
+            { "key": "size", "value": "20" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "9. Thu ngân - thanh toán hóa đơn",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{baseUrl}}/api/nv-thu-ngan/bills/{{maHoaDon}}/thanh-toan?maNhanVienThuNgan={{maNhanVienThuNgan}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nv-thu-ngan", "bills", "{{maHoaDon}}", "thanh-toan"],
+          "query": [
+            { "key": "maNhanVienThuNgan", "value": "{{maNhanVienThuNgan}}" }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "maBan", "value": "B01" },
+    { "key": "maNhanVienPhucVu", "value": "NV_PV_01" },
+    { "key": "maNhanVienBep", "value": "NV_BEP_01" },
+    { "key": "maNhanVienThuNgan", "value": "NV_TN_01" },
+    { "key": "maHoaDon", "value": "HD_SAMPLE" }
+  ]
+}
