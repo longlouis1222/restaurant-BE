@@ -4,7 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import vn.ptit.restaurant.dto.response.DoanhThuTheoNgayResponse;
 import vn.ptit.restaurant.dto.response.DoanhThuTheoThangResponse;
 import vn.ptit.restaurant.entity.HoaDon;
 
@@ -24,17 +23,14 @@ public interface HoaDonRepository
             @Param("denNgay") LocalDateTime denNgay
     );
 
-//    @Query("SELECT new vn.ptit.restaurant.dto.response.DoanhThuTheoNgayResponse(" +
-//            "FUNCTION('DATE', h.ngayLap), " +
-//            "COALESCE(SUM(h.tongTien), 0)) " +
-//            "FROM HoaDon h " +
-//            "WHERE h.ngayLap BETWEEN :tuNgay AND :denNgay " +
-//            "GROUP BY FUNCTION('DATE', h.ngayLap) " +
-//            "ORDER BY FUNCTION('DATE', h.ngayLap)")
-//    List<DoanhThuTheoNgayResponse> doanhThuTheoNgay(
-//            @Param("tuNgay") LocalDateTime tuNgay,
-//            @Param("denNgay") LocalDateTime denNgay
-//    );
+    @Query("SELECT h.banAn.soCho, COUNT(h) " +
+            "FROM HoaDon h " +
+            "WHERE h.ngayLap BETWEEN :tuNgay AND :denNgay " +
+            "GROUP BY h.banAn.soCho")
+    List<Object[]> demSoLanSuDungBanTheoSoCho(
+            @Param("tuNgay") LocalDateTime tuNgay,
+            @Param("denNgay") LocalDateTime denNgay
+    );
 
     @Query("SELECT new vn.ptit.restaurant.dto.response.DoanhThuTheoThangResponse(" +
             "FUNCTION('MONTH', h.ngayLap), " +

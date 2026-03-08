@@ -3,9 +3,8 @@ package vn.ptit.restaurant.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import vn.ptit.restaurant.dto.*;
+import vn.ptit.restaurant.dto.response.BanAnThongKeResponse;
 import vn.ptit.restaurant.dto.response.DoanhThuResponse;
-import vn.ptit.restaurant.dto.response.DoanhThuTheoNgayResponse;
 import vn.ptit.restaurant.dto.response.DoanhThuTheoThangResponse;
 import vn.ptit.restaurant.service.BaoCaoService;
 
@@ -46,5 +45,15 @@ public class BaoCaoController {
         return ResponseEntity.ok(
                 baoCaoService.doanhThuTheoThang(nam)
         );
+    }
+
+    // Thống kê bàn ăn: trung bình số bàn từng loại được sử dụng theo ngày trong tháng
+    @GetMapping("/ban-an/trung-binh-theo-ngay")
+    public ResponseEntity<List<BanAnThongKeResponse>> thongKeBanAnTrungBinhTheoNgayTrongThang(
+            @RequestParam int nam,
+            @RequestParam int thang
+    ) {
+        List<BanAnThongKeResponse> result = baoCaoService.thongKeBanAnTrungBinhTheoNgayTrongThang(nam, thang);
+        return ResponseEntity.ok(result);
     }
 }
