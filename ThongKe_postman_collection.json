@@ -1,0 +1,100 @@
+{
+  "info": {
+    "name": "Restaurant Thong Ke",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Collection test cac API thong ke (ban an, mon an, doanh thu, nguyen lieu, nha cung cap, luong nhan vien)"
+  },
+  "item": [
+    {
+      "name": "Thong ke tan suat mon theo thang",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/bao-cao/mon-an/thong-ke-theo-thang?nam={{nam}}&thang={{thang}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "bao-cao", "mon-an", "thong-ke-theo-thang"],
+          "query": [
+            { "key": "nam", "value": "{{nam}}" },
+            { "key": "thang", "value": "{{thang}}" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Top mon ban chay theo khoang thoi gian",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/bao-cao/mon-an/top?fromDate={{fromDate}}&toDate={{toDate}}&page={{page}}&size={{size}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "bao-cao", "mon-an", "top"],
+          "query": [
+            { "key": "fromDate", "value": "{{fromDate}}" },
+            { "key": "toDate", "value": "{{toDate}}" },
+            { "key": "page", "value": "{{page}}" },
+            { "key": "size", "value": "{{size}}" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Thong ke nguyen lieu theo ngay",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/bao-cao/nguyen-lieu/theo-ngay?fromDate={{fromDate}}&toDate={{toDate}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "bao-cao", "nguyen-lieu", "theo-ngay"],
+          "query": [
+            { "key": "fromDate", "value": "{{fromDate}}" },
+            { "key": "toDate", "value": "{{toDate}}" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Thong ke nha cung cap theo thang",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/bao-cao/nha-cung-cap/theo-thang?nam={{nam}}&thang={{thang}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "bao-cao", "nha-cung-cap", "theo-thang"],
+          "query": [
+            { "key": "nam", "value": "{{nam}}" },
+            { "key": "thang", "value": "{{thang}}" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Thong ke luong nhan vien theo thang",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/bao-cao/nhan-vien/luong-theo-thang?nam={{nam}}&thang={{thang}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "bao-cao", "nhan-vien", "luong-theo-thang"],
+          "query": [
+            { "key": "nam", "value": "{{nam}}" },
+            { "key": "thang", "value": "{{thang}}" }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "nam", "value": "2026" },
+    { "key": "thang", "value": "3" },
+    { "key": "fromDate", "value": "2026-03-01" },
+    { "key": "toDate", "value": "2026-03-31" },
+    { "key": "page", "value": "0" },
+    { "key": "size", "value": "10" }
+  ]
+}

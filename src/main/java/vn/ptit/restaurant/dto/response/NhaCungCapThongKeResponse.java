@@ -1,0 +1,16 @@
+package vn.ptit.restaurant.dto.response;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+import java.math.BigDecimal;
+
+@Data
+@AllArgsConstructor
+public class NhaCungCapThongKeResponse {
+
+    private String maNhaCungCap;
+    private String tenNhaCungCap;
+    private Long tongSoLuongNguyenLieu;
+    private BigDecimal tongChiPhi;
+}

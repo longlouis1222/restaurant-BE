@@ -42,4 +42,23 @@ public interface HoaDonRepository
     List<DoanhThuTheoThangResponse> doanhThuTheoThang(
             @Param("nam") int nam
     );
+
+    // Đếm tổng số khách (hóa đơn PAID) trong một tháng
+    @Query("SELECT COUNT(h) " +
+            "FROM HoaDon h " +
+            "WHERE FUNCTION('YEAR', h.ngayLap) = :nam " +
+            "AND FUNCTION('MONTH', h.ngayLap) = :thang " +
+            "AND h.trangThai = vn.ptit.restaurant.entity.HoaDon$TrangThaiHoaDon.PAID")
+    Long demTongKhachTrongThang(@Param("nam") int nam,
+                                 @Param("thang") int thang);
+
+    // Đếm tổng số khách (hóa đơn PAID) theo từng nhân viên trong một tháng
+    @Query("SELECT h.nhanVien.maNhanVien, h.nhanVien.tenNhanVien, COUNT(h) " +
+            "FROM HoaDon h " +
+            "WHERE FUNCTION('YEAR', h.ngayLap) = :nam " +
+            "AND FUNCTION('MONTH', h.ngayLap) = :thang " +
+            "AND h.trangThai = vn.ptit.restaurant.entity.HoaDon$TrangThaiHoaDon.PAID " +
+            "GROUP BY h.nhanVien.maNhanVien, h.nhanVien.tenNhanVien")
+    List<Object[]> demKhachTheoNhanVienTrongThang(@Param("nam") int nam,
+                                                  @Param("thang") int thang);
 }
