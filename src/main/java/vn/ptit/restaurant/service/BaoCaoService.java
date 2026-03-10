@@ -11,8 +11,9 @@ public interface BaoCaoService {
 
     DoanhThuResponse tinhTongDoanhThu(LocalDateTime tuNgay, LocalDateTime denNgay);
 
-//    List<DoanhThuTheoNgayResponse> doanhThuTheoNgay(LocalDateTime tuNgay, LocalDateTime denNgay);
-//
+    // Doanh thu theo ngày trong khoảng thời gian
+    List<DoanhThuTheoNgayResponse> doanhThuTheoNgay(LocalDate fromDate, LocalDate toDate);
+
     List<DoanhThuTheoThangResponse> doanhThuTheoThang(int nam);
 
     // Thống kê trung bình số bàn từng loại được sử dụng theo ngày trong một tháng
@@ -36,4 +37,10 @@ public interface BaoCaoService {
 
     // Thống kê lương nhân viên theo tháng
     List<LuongNhanVienResponse> thongKeLuongNhanVienTheoThang(int nam, int thang);
+
+    // Tổng chi phí nguyên liệu theo ngày trong khoảng thời gian
+    List<ChiPhiNgayResponse> chiPhiTheoNgay(LocalDate fromDate, LocalDate toDate);
+
+    // Lợi nhuận theo ngày = doanh thu theo ngày - chi phí nguyên liệu theo ngày
+    List<LoiNhuanNgayResponse> loiNhuanTheoNgay(LocalDate fromDate, LocalDate toDate);
 }

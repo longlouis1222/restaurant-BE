@@ -28,6 +28,14 @@ public class BaoCaoController {
         );
     }
 
+    @GetMapping("/doanh-thu/theo-ngay")
+    public ResponseEntity<List<DoanhThuTheoNgayResponse>> doanhThuTheoNgay(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate
+    ) {
+        return ResponseEntity.ok(baoCaoService.doanhThuTheoNgay(fromDate, toDate));
+    }
+
     @GetMapping("/theo-thang")
     public ResponseEntity<List<DoanhThuTheoThangResponse>> theoThang(
             @RequestParam int nam) {
@@ -77,6 +85,22 @@ public class BaoCaoController {
     ) {
         List<NguyenLieuThongKeNgayResponse> result = baoCaoService.thongKeNguyenLieuTheoNgay(fromDate, toDate);
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/chi-phi/theo-ngay")
+    public ResponseEntity<List<ChiPhiNgayResponse>> chiPhiTheoNgay(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate
+    ) {
+        return ResponseEntity.ok(baoCaoService.chiPhiTheoNgay(fromDate, toDate));
+    }
+
+    @GetMapping("/loi-nhuan/theo-ngay")
+    public ResponseEntity<List<LoiNhuanNgayResponse>> loiNhuanTheoNgay(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate
+    ) {
+        return ResponseEntity.ok(baoCaoService.loiNhuanTheoNgay(fromDate, toDate));
     }
 
     // Thống kê nhà cung cấp: sắp xếp theo tổng lượng nguyên liệu cung cấp trong tháng

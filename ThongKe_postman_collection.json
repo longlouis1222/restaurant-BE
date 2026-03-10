@@ -86,6 +86,54 @@
         }
       },
       "response": []
+    },
+    {
+      "name": "Doanh thu theo ngay",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/bao-cao/doanh-thu/theo-ngay?fromDate={{fromDate}}&toDate={{toDate}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "bao-cao", "doanh-thu", "theo-ngay"],
+          "query": [
+            { "key": "fromDate", "value": "{{fromDate}}" },
+            { "key": "toDate", "value": "{{toDate}}" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Chi phi nguyen lieu theo ngay",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/bao-cao/chi-phi/theo-ngay?fromDate={{fromDate}}&toDate={{toDate}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "bao-cao", "chi-phi", "theo-ngay"],
+          "query": [
+            { "key": "fromDate", "value": "{{fromDate}}" },
+            { "key": "toDate", "value": "{{toDate}}" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Loi nhuan theo ngay",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/bao-cao/loi-nhuan/theo-ngay?fromDate={{fromDate}}&toDate={{toDate}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "bao-cao", "loi-nhuan", "theo-ngay"],
+          "query": [
+            { "key": "fromDate", "value": "{{fromDate}}" },
+            { "key": "toDate", "value": "{{toDate}}" }
+          ]
+        }
+      },
+      "response": []
     }
   ],
   "variable": [

@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import vn.ptit.restaurant.dto.response.DoanhThuTheoNgayResponse;
 import vn.ptit.restaurant.dto.response.DoanhThuTheoThangResponse;
 import vn.ptit.restaurant.entity.HoaDon;
 
@@ -21,6 +22,18 @@ public interface HoaDonRepository
     BigDecimal tinhTongDoanhThu(
             @Param("tuNgay") LocalDateTime tuNgay,
             @Param("denNgay") LocalDateTime denNgay
+    );
+
+    @Query("SELECT new vn.ptit.restaurant.dto.response.DoanhThuTheoNgayResponse(" +
+            "FUNCTION('DATE', h.ngayLap), " +
+            "COALESCE(SUM(h.tongTien), 0)) " +
+            "FROM HoaDon h " +
+            "WHERE h.ngayLap BETWEEN :fromDate AND :toDate " +
+            "GROUP BY FUNCTION('DATE', h.ngayLap) " +
+            "ORDER BY FUNCTION('DATE', h.ngayLap)")
+    List<DoanhThuTheoNgayResponse> doanhThuTheoNgay(
+            @Param("fromDate") LocalDateTime fromDate,
+            @Param("toDate") LocalDateTime toDate
     );
 
     @Query("SELECT h.banAn.soCho, COUNT(h) " +
@@ -62,3 +75,4 @@ public interface HoaDonRepository
     List<Object[]> demKhachTheoNhanVienTrongThang(@Param("nam") int nam,
                                                   @Param("thang") int thang);
 }
+

@@ -34,6 +34,13 @@ public class BaoCaoServiceImpl implements BaoCaoService {
     }
 
     @Override
+    public List<DoanhThuTheoNgayResponse> doanhThuTheoNgay(LocalDate fromDate, LocalDate toDate) {
+        LocalDateTime fromDateTime = fromDate.atStartOfDay();
+        LocalDateTime toDateTime = toDate.atTime(23, 59, 59);
+        return hoaDonRepository.doanhThuTheoNgay(fromDateTime, toDateTime);
+    }
+
+    @Override
     public List<DoanhThuTheoThangResponse> doanhThuTheoThang(int nam) {
         return hoaDonRepository.doanhThuTheoThang(nam);
     }
@@ -170,6 +177,45 @@ public class BaoCaoServiceImpl implements BaoCaoService {
                     thuong,
                     luongThucNhan
             ));
+        }
+
+        return result;
+    }
+
+    @Override
+    public List<ChiPhiNgayResponse> chiPhiTheoNgay(LocalDate fromDate, LocalDate toDate) {
+        LocalDateTime fromDateTime = fromDate.atStartOfDay();
+        LocalDateTime toDateTime = toDate.atTime(23, 59, 59);
+        return chiTietPhieuNhapRepository.chiPhiTheoNgay(fromDateTime, toDateTime);
+    }
+
+    @Override
+    public List<LoiNhuanNgayResponse> loiNhuanTheoNgay(LocalDate fromDate, LocalDate toDate) {
+        // Lấy danh sách doanh thu theo ngày
+        List<DoanhThuTheoNgayResponse> doanhThuList = doanhThuTheoNgay(fromDate, toDate);
+        // Lấy danh sách chi phí theo ngày
+        List<ChiPhiNgayResponse> chiPhiList = chiPhiTheoNgay(fromDate, toDate);
+
+        // Đưa về map theo ngày để dễ kết hợp
+        Map<Date, BigDecimal> doanhThuByDate = new HashMap<>();
+        for (DoanhThuTheoNgayResponse d : doanhThuList) {
+            doanhThuByDate.put(d.getNgay(), d.getDoanhThu());
+        }
+
+        Map<Date, BigDecimal> chiPhiByDate = new HashMap<>();
+        for (ChiPhiNgayResponse c : chiPhiList) {
+            chiPhiByDate.put(c.getNgay(), c.getTongChiPhi());
+        }
+
+        List<LoiNhuanNgayResponse> result = new ArrayList<>();
+
+        LocalDate current = fromDate;
+        while (!current.isAfter(toDate)) {
+            BigDecimal doanhThu = doanhThuByDate.getOrDefault(current, BigDecimal.ZERO);
+            BigDecimal chiPhi = chiPhiByDate.getOrDefault(current, BigDecimal.ZERO);
+            BigDecimal loiNhuan = doanhThu.subtract(chiPhi);
+            result.add(new LoiNhuanNgayResponse(current, doanhThu, chiPhi, loiNhuan));
+            current = current.plusDays(1);
         }
 
         return result;
