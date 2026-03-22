@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.ptit.restaurant.common.catalog.AbstractCatalogService;
+import vn.ptit.restaurant.common.CodeGenerator;
 import vn.ptit.restaurant.dto.request.NhomMonAnRequest;
 import vn.ptit.restaurant.dto.request.NhomMonAnSearchRequest;
 import vn.ptit.restaurant.dto.response.NhomMonAnResponse;
@@ -36,7 +37,7 @@ public class NhomMonAnServiceImpl extends AbstractCatalogService<
     @Override
     protected String generateIdIfNeeded(NhomMonAnRequest request) {
         if (request.getMaNhomMon() == null || request.getMaNhomMon().trim().isEmpty()) {
-            return "NM-" + System.currentTimeMillis();
+            return CodeGenerator.generateCode("NM", 10);
         }
         return request.getMaNhomMon();
     }

@@ -1,0 +1,291 @@
+{
+  "info": {
+    "name": "Init Danh Muc Data",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Collection tạo dữ liệu danh mục ban đầu cho hệ thống nhà hàng (Luong, ChucVu, BanAn, NhomMonAn, NhaCungCap, NguyenLieu, KhachHang, MonAn)."
+  },
+  "item": [
+    {
+      "name": "1. Tạo lương cơ bản demo",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/luong",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "luong"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mucLuong\": 8000000,\n  \"ngayCongTheoThang\": 26,\n  \"ngayCongThucTe\": 0,\n  \"thuong\": 0,\n  \"phat\": 0,\n  \"ghiChu\": \"Luong co ban cho cac chuc vu demo\"\n}"
+        }
+      }
+    },
+    {
+      "name": "2. Tạo chức vụ: Phục vụ",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/chuc-vu",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "chuc-vu"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tenChucVu\": \"Phuc Vu\",\n  \"maLuong\": \"{{maLuongDemo}}\"\n}"
+        }
+      }
+    },
+    {
+      "name": "3. Tạo chức vụ: Bếp",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/chuc-vu",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "chuc-vu"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tenChucVu\": \"Bep\",\n  \"maLuong\": \"{{maLuongDemo}}\"\n}"
+        }
+      }
+    },
+    {
+      "name": "4. Tạo chức vụ: Thu ngân",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/chuc-vu",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "chuc-vu"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tenChucVu\": \"Thu Ngan\",\n  \"maLuong\": \"{{maLuongDemo}}\"\n}"
+        }
+      }
+    },
+    {
+      "name": "5. Tạo bàn ăn: Bàn 2 chỗ tầng 1",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/ban-an",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "ban-an"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"soCho\": 2,\n  \"khuVuc\": \"Tang 1\",\n  \"tanSuatSuDung\": 0,\n  \"trangThai\": \"AVAILABLE\"\n}"
+        }
+      }
+    },
+    {
+      "name": "6. Tạo bàn ăn: Bàn 4 chỗ tầng 1",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/ban-an",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "ban-an"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"soCho\": 4,\n  \"khuVuc\": \"Tang 1\",\n  \"tanSuatSuDung\": 0,\n  \"trangThai\": \"AVAILABLE\"\n}"
+        }
+      }
+    },
+    {
+      "name": "7. Tạo bàn ăn: Bàn 6 chỗ tầng 2",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/ban-an",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "ban-an"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"soCho\": 6,\n  \"khuVuc\": \"Tang 2\",\n  \"tanSuatSuDung\": 0,\n  \"trangThai\": \"AVAILABLE\"\n}"
+        }
+      }
+    },
+    {
+      "name": "8. Tạo nhóm món ăn: Khai vị",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/nhom-mon",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nhom-mon"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tenNhomMon\": \"Khai vi\",\n  \"moTa\": \"Mon khai vi\"\n}"
+        }
+      }
+    },
+    {
+      "name": "9. Tạo nhóm món ăn: Món chính",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/nhom-mon",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nhom-mon"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tenNhomMon\": \"Mon chinh\",\n  \"moTa\": \"Mon chinh\"\n}"
+        }
+      }
+    },
+    {
+      "name": "10. Tạo nhóm món ăn: Tráng miệng",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/nhom-mon",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nhom-mon"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tenNhomMon\": \"Trang mieng\",\n  \"moTa\": \"Mon trang mieng\"\n}"
+        }
+      }
+    },
+    {
+      "name": "11. Tạo nhà cung cấp: NCC tổng hợp",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "url": {
+          "raw": "{{baseUrl}}/api/nha-cung-cap",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nha-cung-cap"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tenNcc\": \"Nha cung cap tong hop\",\n  \"thongTin\": \"Chuyen cung cap nguyen lieu tong hop\"\n}"
+        }
+      }
+    },
+    {
+      "name": "12. Tạo nguyên liệu: Thịt bò",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "url": {
+          "raw": "{{baseUrl}}/api/nguyen-lieu",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nguyen-lieu"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tenNguyenLieu\": \"Thit bo\",\n  \"donViTinh\": \"kg\",\n  \"giaNhap\": 200000\n}"
+        }
+      }
+    },
+    {
+      "name": "13. Tạo nguyên liệu: Rau xà lách",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "url": {
+          "raw": "{{baseUrl}}/api/nguyen-lieu",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nguyen-lieu"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tenNguyenLieu\": \"Rau xa lach\",\n  \"donViTinh\": \"kg\",\n  \"giaNhap\": 50000\n}"
+        }
+      }
+    },
+    {
+      "name": "14. Tạo khách hàng: Nguyen Van A",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "url": {
+          "raw": "{{baseUrl}}/api/khach-hang",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "khach-hang"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tenKhachHang\": \"Nguyen Van A\",\n  \"sdt\": \"0900000001\",\n  \"diaChi\": \"Ha Noi\",\n  \"ngaySinh\": \"1990-01-01\",\n  \"diemTichLuy\": 0\n}"
+        }
+      }
+    },
+    {
+      "name": "15. Tạo món ăn: Bò bít tết (nhóm món chính)",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "url": {
+          "raw": "{{baseUrl}}/api/mon-an",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "mon-an"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tenMon\": \"Bo bit tet\",\n  \"donGia\": 150000,\n  \"thoiGianCheBien\": 20,\n  \"maNhomMon\": \"{{maNhomMonChinh}}\"\n}"
+        }
+      }
+    },
+    {
+      "name": "16. Tạo món ăn: Salad rau (nhóm khai vị)",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "url": {
+          "raw": "{{baseUrl}}/api/mon-an",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "mon-an"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tenMon\": \"Salad rau\",\n  \"donGia\": 60000,\n  \"thoiGianCheBien\": 10,\n  \"maNhomMon\": \"{{maNhomMonKhaiVi}}\"\n}"
+        }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "maLuongDemo", "value": "" },
+    { "key": "maNhomMonChinh", "value": "" },
+    { "key": "maNhomMonKhaiVi", "value": "" }
+  ]
+}

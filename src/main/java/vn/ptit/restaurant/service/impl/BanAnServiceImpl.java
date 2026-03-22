@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import vn.ptit.restaurant.common.CodeGenerator;
 import vn.ptit.restaurant.common.catalog.AbstractCatalogService;
 import vn.ptit.restaurant.dto.request.BanAnRequest;
 import vn.ptit.restaurant.dto.request.BanAnSearchRequest;
@@ -35,7 +36,7 @@ public class BanAnServiceImpl extends AbstractCatalogService<
     @Override
     protected String generateIdIfNeeded(BanAnRequest request) {
         if (request.getMaBan() == null || request.getMaBan().trim().isEmpty()) {
-            return "BA-" + System.currentTimeMillis();
+            return CodeGenerator.generateCode("BA", 10);
         }
         return request.getMaBan();
     }

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.ptit.restaurant.common.catalog.AbstractCatalogService;
+import vn.ptit.restaurant.common.CodeGenerator;
 import vn.ptit.restaurant.dto.request.NguyenLieuRequest;
 import vn.ptit.restaurant.dto.request.NguyenLieuSearchRequest;
 import vn.ptit.restaurant.dto.response.NguyenLieuResponse;
@@ -35,7 +36,7 @@ public class NguyenLieuServiceImpl extends AbstractCatalogService<
     @Override
     protected String generateIdIfNeeded(NguyenLieuRequest request) {
         if (request.getMaNguyenLieu() == null || request.getMaNguyenLieu().trim().isEmpty()) {
-            return "NL-" + System.currentTimeMillis();
+            return CodeGenerator.generateCode("NL", 10);
         }
         return request.getMaNguyenLieu();
     }

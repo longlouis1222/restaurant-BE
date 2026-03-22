@@ -19,8 +19,10 @@ public class ChucVu {
     @Column(name = "ten_chuc_vu", nullable = false)
     private String tenChucVu;
 
-    @Column(name = "ma_luong", nullable = false)
-    private String maLuong;
+    // N ChucVu - 1 Luong
+    @ManyToOne
+    @JoinColumn(name = "ma_luong", nullable = false)
+    private Luong luong;
 
     @OneToMany(mappedBy = "chucVu")
     private List<NhanVien> nhanViens;

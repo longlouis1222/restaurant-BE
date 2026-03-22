@@ -1,0 +1,173 @@
+{
+  "info": {
+    "name": "Init NhanVien + Full Order Flow",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Collection khởi tạo nhân viên (theo mã NV + 2 ký tự đầu mã chức vụ + số tăng dần) và test full flow order: phục vụ -> bếp -> thu ngân."
+  },
+  "item": [
+    {
+      "name": "1. Tạo nhân viên phục vụ",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "url": {
+          "raw": "{{baseUrl}}/api/nhan-vien",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nhan-vien"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tenNhanVien\": \"Nhan vien phuc vu 1\",\n  \"soDienThoai\": \"0901000001\",\n  \"ngaySinh\": \"1995-01-01\",\n  \"ngayVaoLam\": \"2024-01-01\",\n  \"cccd\": \"012345678901\",\n  \"maChucVu\": \"{{maChucVuPhucVu}}\",\n  \"nvPhucVuInfo\": {\n    \"khuVucPhuTrach\": \"Khu A\",\n    \"soLuongBanPhucVu\": 5\n  }\n}"
+        }
+      }
+    },
+    {
+      "name": "2. Tạo nhân viên bếp",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "url": {
+          "raw": "{{baseUrl}}/api/nhan-vien",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nhan-vien"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tenNhanVien\": \"Nhan vien bep 1\",\n  \"soDienThoai\": \"0901000002\",\n  \"ngaySinh\": \"1992-02-02\",\n  \"ngayVaoLam\": \"2024-01-01\",\n  \"cccd\": \"012345678902\",\n  \"maChucVu\": \"{{maChucVuBep}}\",\n  \"nvKhoBepInfo\": {\n    \"viTri\": \"Bếp trưởng chính, Kho nguyên liệu \",\n    \"trinhDo\": \"Bếp trưởng\"\n  }\n}"
+        }
+      }
+    },
+    {
+      "name": "3. Tạo nhân viên thu ngân",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "url": {
+          "raw": "{{baseUrl}}/api/nhan-vien",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nhan-vien"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tenNhanVien\": \"Nhan vien thu ngan 1\",\n  \"soDienThoai\": \"0901000003\",\n  \"ngaySinh\": \"1993-03-03\",\n  \"ngayVaoLam\": \"2024-01-01\",\n  \"cccd\": \"012345678903\",\n  \"maChucVu\": \"{{maChucVuThuNgan}}\",\n  \"nvThuNganInfo\": {\n    \"caThuNgan\": \"fulltime\",\n    \"tongTienXuLy\": 0\n  }\n}"
+        }
+      }
+    },
+    {
+      "name": "4. Tạo order cho bàn (Phục vụ)",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "url": {
+          "raw": "{{baseUrl}}/api/nv-phuc-vu/orders?maBan={{maBan}}&maNhanVienPhucVu={{maNhanVienPhucVu}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nv-phuc-vu", "orders"],
+          "query": [
+            { "key": "maBan", "value": "{{maBan}}" },
+            { "key": "maNhanVienPhucVu", "value": "{{maNhanVienPhucVu}}" }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "[\n  { \"maMon\": \"{{maMonChinh}}\", \"soLuong\": 2 },\n  { \"maMon\": \"{{maMonKhaiVi}}\", \"soLuong\": 1 }\n]"
+        }
+      }
+    },
+    {
+      "name": "5. Bếp - hoàn thành order",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{baseUrl}}/api/nv-kho-bep/orders/{{maHoaDon}}/hoan-thanh?maNhanVienBep={{maNhanVienBep}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nv-kho-bep", "orders", "{{maHoaDon}}", "hoan-thanh"],
+          "query": [
+            { "key": "maNhanVienBep", "value": "{{maNhanVienBep}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "6. Phục vụ - xác nhận đã phục vụ",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{baseUrl}}/api/nv-phuc-vu/orders/{{maHoaDon}}/xac-nhan-phuc-vu?maNhanVienPhucVu={{maNhanVienPhucVu}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nv-phuc-vu", "orders", "{{maHoaDon}}", "xac-nhan-phuc-vu"],
+          "query": [
+            { "key": "maNhanVienPhucVu", "value": "{{maNhanVienPhucVu}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "7. Phục vụ - yêu cầu thanh toán",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{baseUrl}}/api/nv-phuc-vu/orders/{{maHoaDon}}/yeu-cau-thanh-toan?maNhanVienPhucVu={{maNhanVienPhucVu}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nv-phuc-vu", "orders", "{{maHoaDon}}", "yeu-cau-thanh-toan"],
+          "query": [
+            { "key": "maNhanVienPhucVu", "value": "{{maNhanVienPhucVu}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "8. Thu ngân - thanh toán hóa đơn",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{baseUrl}}/api/nv-thu-ngan/bills/{{maHoaDon}}/thanh-toan?maNhanVienThuNgan={{maNhanVienThuNgan}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nv-thu-ngan", "bills", "{{maHoaDon}}", "thanh-toan"],
+          "query": [
+            { "key": "maNhanVienThuNgan", "value": "{{maNhanVienThuNgan}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "0. Danh sách tất cả nhân viên",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/nhan-vien?page=0&size=50",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nhan-vien"],
+          "query": [
+            { "key": "page", "value": "0" },
+            { "key": "size", "value": "50" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "0.1. Xem chi tiết nhân viên theo mã",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/nhan-vien/{{maNhanVienChiTiet}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nhan-vien", "{{maNhanVienChiTiet}}"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "maChucVuPhucVu", "value": "" },
+    { "key": "maChucVuBep", "value": "" },
+    { "key": "maChucVuThuNgan", "value": "" },
+    { "key": "maBan", "value": "" },
+    { "key": "maMonChinh", "value": "" },
+    { "key": "maMonKhaiVi", "value": "" },
+    { "key": "maNhanVienPhucVu", "value": "" },
+    { "key": "maNhanVienBep", "value": "" },
+    { "key": "maNhanVienThuNgan", "value": "" },
+    { "key": "maHoaDon", "value": "" },
+    { "key": "maNhanVienChiTiet", "value": "" }
+  ]
+}

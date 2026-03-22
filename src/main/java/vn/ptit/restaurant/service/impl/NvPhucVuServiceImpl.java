@@ -58,13 +58,11 @@ public class NvPhucVuServiceImpl extends AbstractCatalogService<
     @Override
     protected NvPhucVu createEntity(NvPhucVuRequest request, String id) {
         // Validate NhanVien exists
-        if (!nhanVienRepository.existsById(id)) {
-            throw new NotFoundException("NhanVien not found: " + id);
-        }
+        NhanVien parent = nhanVienRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("NhanVien not found: " + id));
 
         return NvPhucVu.builder()
-                .maNhanVien(id)
-                .nhanVien(nhanVienRepository.findById(id).orElse(null))
+                .nhanVien(parent)
                 .khuVucPhuTrach(request.getKhuVucPhuTrach())
                 .soLuongBanPhucVu(request.getSoLuongBanPhucVu())
                 .build();

@@ -16,6 +16,7 @@ import vn.ptit.restaurant.dto.response.NvThuNganResponse;
 import vn.ptit.restaurant.dto.response.OrderResponse;
 import vn.ptit.restaurant.dto.response.PageResponse;
 import vn.ptit.restaurant.entity.HoaDon;
+import vn.ptit.restaurant.entity.NhanVien;
 import vn.ptit.restaurant.entity.NvThuNgan;
 import vn.ptit.restaurant.exception.NotFoundException;
 import vn.ptit.restaurant.mapper.OrderMapper;
@@ -54,13 +55,11 @@ public class NvThuNganServiceImpl extends AbstractCatalogService<
     @Override
     protected NvThuNgan createEntity(NvThuNganRequest request, String id) {
         // Validate NhanVien exists
-        if (!nhanVienRepository.existsById(id)) {
-            throw new NotFoundException("NhanVien not found: " + id);
-        }
+        NhanVien parent = nhanVienRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("NhanVien not found: " + id));
 
         return NvThuNgan.builder()
-                .maNhanVien(id)
-                .nhanVien(nhanVienRepository.findById(id).orElse(null))
+                .nhanVien(parent)
                 .caThuNgan(request.getCaThuNgan())
                 .tongTienXuLy(request.getTongTienXuLy())
                 .build();

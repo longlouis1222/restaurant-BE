@@ -12,6 +12,7 @@ import vn.ptit.restaurant.dto.response.NvKhoBepResponse;
 import vn.ptit.restaurant.dto.response.OrderResponse;
 import vn.ptit.restaurant.dto.response.PageResponse;
 import vn.ptit.restaurant.entity.HoaDon;
+import vn.ptit.restaurant.entity.NhanVien;
 import vn.ptit.restaurant.entity.NvKhoBep;
 import vn.ptit.restaurant.exception.NotFoundException;
 import vn.ptit.restaurant.mapper.OrderMapper;
@@ -54,13 +55,11 @@ public class NvKhoBepServiceImpl extends AbstractCatalogService<
     @Override
     protected NvKhoBep createEntity(NvKhoBepRequest request, String id) {
         // Validate NhanVien exists
-        if (!nhanVienRepository.existsById(id)) {
-            throw new NotFoundException("NhanVien not found: " + id);
-        }
+        NhanVien parent = nhanVienRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("NhanVien not found: " + id));
 
         return NvKhoBep.builder()
-                .maNhanVien(id)
-                .nhanVien(nhanVienRepository.findById(id).orElse(null))
+                .nhanVien(parent)
                 .viTri(request.getViTri())
                 .trinhDo(request.getTrinhDo())
                 .build();

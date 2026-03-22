@@ -20,4 +20,9 @@ public class NhanVienResponse {
     private LocalDateTime ngayVaoLam;
     private String cccd;
     private String maChucVu;
+
+    // Thông tin chi tiết theo vai trò (nếu có)
+    private NvKhoBepResponse nvKhoBep;
+    private NvPhucVuResponse nvPhucVu;
+    private NvThuNganResponse nvThuNgan;
 }

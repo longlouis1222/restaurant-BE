@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.ptit.restaurant.common.catalog.AbstractCatalogService;
+import vn.ptit.restaurant.common.CodeGenerator;
 import vn.ptit.restaurant.dto.request.MonAnRequest;
 import vn.ptit.restaurant.dto.request.MonAnSearchRequest;
 import vn.ptit.restaurant.dto.response.MonAnResponse;
@@ -35,7 +36,7 @@ public class MonAnServiceImpl extends AbstractCatalogService<
     @Override
     protected String generateIdIfNeeded(MonAnRequest request) {
         if (request.getMaMon() == null || request.getMaMon().trim().isEmpty()) {
-            return "MA-" + System.currentTimeMillis();
+            return CodeGenerator.generateCode("MA", 10);
         }
         return request.getMaMon();
     }

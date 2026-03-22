@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import vn.ptit.restaurant.dto.response.*;
 import vn.ptit.restaurant.entity.ChucVu;
 import vn.ptit.restaurant.entity.NhanVien;
+import vn.ptit.restaurant.entity.Luong;
 import vn.ptit.restaurant.repository.*;
 import vn.ptit.restaurant.service.BaoCaoService;
 
@@ -119,13 +120,6 @@ public class BaoCaoServiceImpl implements BaoCaoService {
         // 2. Lấy phân bổ số khách theo từng nhân viên
         List<Object[]> raw = hoaDonRepository.demKhachTheoNhanVienTrongThang(nam, thang);
 
-        // 3. Chuẩn bị map lương cơ bản theo mã chức vụ (đề xuất cứng trong code theo maLuong)
-        Map<String, BigDecimal> luongCoBanTheoMaLuong = new HashMap<>();
-        // Ví dụ: bạn có thể tùy chỉnh theo maLuong: L1, L2, ... hoặc theo mã chức vụ
-        luongCoBanTheoMaLuong.put("L1", new BigDecimal("7000000"));
-        luongCoBanTheoMaLuong.put("L2", new BigDecimal("9000000"));
-        luongCoBanTheoMaLuong.put("L3", new BigDecimal("12000000"));
-
         List<LuongNhanVienResponse> result = new ArrayList<>();
 
         for (Object[] row : raw) {
@@ -153,9 +147,12 @@ public class BaoCaoServiceImpl implements BaoCaoService {
 
             String maChucVu = chucVu.getMaChucVu();
             String tenChucVu = chucVu.getTenChucVu();
-            String maLuong = chucVu.getMaLuong();
 
-            BigDecimal luongCoBan = luongCoBanTheoMaLuong.getOrDefault(maLuong, new BigDecimal("5000000"));
+            // Lấy lương cơ bản từ bảng luong thông qua quan hệ ChucVu.luong
+            Luong luongEntity = chucVu.getLuong();
+            BigDecimal luongCoBan = (luongEntity != null && luongEntity.getMucLuong() != null)
+                    ? luongEntity.getMucLuong()
+                    : BigDecimal.ZERO;
 
             // Công thức thưởng: (Tổng khách / 10) * 2% * Lương cơ bản
             long soBlock10Khach = tongKhach / 10; // dùng tổng khách toàn nhà hàng trong tháng
@@ -165,6 +162,7 @@ public class BaoCaoServiceImpl implements BaoCaoService {
                     .multiply(BigDecimal.valueOf(soBlock10Khach))
                     .setScale(0, RoundingMode.HALF_UP);
 
+            // Lương thực nhận = Lương cơ bản + Thưởng
             BigDecimal luongThucNhan = luongCoBan.add(thuong);
 
             result.add(new LuongNhanVienResponse(

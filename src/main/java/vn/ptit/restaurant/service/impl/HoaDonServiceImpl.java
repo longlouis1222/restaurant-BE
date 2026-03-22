@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import vn.ptit.restaurant.common.CodeGenerator;
 import vn.ptit.restaurant.dto.request.HoaDonSearchRequest;
 import vn.ptit.restaurant.dto.request.TaoHoaDonRequest;
 import vn.ptit.restaurant.dto.response.HoaDonResponse;
@@ -62,8 +63,9 @@ public class HoaDonServiceImpl implements HoaDonService {
                 .collect(Collectors.toMap(MonAn::getMaMon, m -> m));
 
         // 4️⃣ Tạo hóa đơn
+        String newId = CodeGenerator.generateCode("HD", 10);
         HoaDon hoaDon = HoaDon.builder()
-                .maHoaDon("HD-" + System.currentTimeMillis())
+                .maHoaDon(newId)
                 .trangThai(HoaDon.TrangThaiHoaDon.NEW)
                 .ngayLap(LocalDateTime.now())
                 .banAn(banAn)

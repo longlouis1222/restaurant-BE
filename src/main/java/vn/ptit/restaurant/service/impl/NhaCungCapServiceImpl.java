@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import vn.ptit.restaurant.common.CodeGenerator;
 import vn.ptit.restaurant.common.catalog.AbstractCatalogService;
 import vn.ptit.restaurant.dto.request.NhaCungCapRequest;
 import vn.ptit.restaurant.dto.request.NhaCungCapSearchRequest;
@@ -35,7 +36,7 @@ public class NhaCungCapServiceImpl extends AbstractCatalogService<
     @Override
     protected String generateIdIfNeeded(NhaCungCapRequest request) {
         if (request.getMaNcc() == null || request.getMaNcc().trim().isEmpty()) {
-            return "NCC-" + System.currentTimeMillis();
+            return CodeGenerator.generateCode("NCC", 10);
         }
         return request.getMaNcc();
     }

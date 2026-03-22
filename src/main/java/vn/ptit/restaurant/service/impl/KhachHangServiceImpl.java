@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.ptit.restaurant.common.catalog.AbstractCatalogService;
+import vn.ptit.restaurant.common.CodeGenerator;
 import vn.ptit.restaurant.dto.request.KhachHangRequest;
 import vn.ptit.restaurant.dto.request.KhachHangSearchRequest;
 import vn.ptit.restaurant.dto.response.KhachHangResponse;
@@ -35,7 +36,7 @@ public class KhachHangServiceImpl extends AbstractCatalogService<
     @Override
     protected String generateIdIfNeeded(KhachHangRequest request) {
         if (request.getMaKhachHang() == null || request.getMaKhachHang().trim().isEmpty()) {
-            return "KH-" + System.currentTimeMillis();
+            return CodeGenerator.generateCode("KH", 10);
         }
         return request.getMaKhachHang();
     }

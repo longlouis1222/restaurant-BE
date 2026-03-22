@@ -19,6 +19,7 @@ import vn.ptit.restaurant.repository.NhanVienRepository;
 import vn.ptit.restaurant.repository.ChiTietPhieuNhapRepository;
 import vn.ptit.restaurant.service.PhieuNhapService;
 import vn.ptit.restaurant.exception.NotFoundException;
+import vn.ptit.restaurant.common.CodeGenerator;
 
 import java.util.stream.Collectors;
 import java.util.List;
@@ -49,7 +50,7 @@ public class PhieuNhapServiceImpl extends AbstractCatalogService<
     @Override
     protected String generateIdIfNeeded(PhieuNhapRequest request) {
         if (request.getMaPhieuNhap() == null || request.getMaPhieuNhap().trim().isEmpty()) {
-            return "PN-" + System.currentTimeMillis();
+            return CodeGenerator.generateCode("PN", 10);
         }
         return request.getMaPhieuNhap();
     }

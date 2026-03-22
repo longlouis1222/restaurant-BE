@@ -9,7 +9,7 @@ import vn.ptit.restaurant.dto.response.NhomMonAnResponse;
 import vn.ptit.restaurant.service.NhomMonAnService;
 
 @RestController
-@RequestMapping("/api/nhom-mon")
+@RequestMapping("/api/nhom-mon-an")
 public class NhomMonAnController extends AbstractCatalogController<String, NhomMonAnRequest, NhomMonAnRequest, NhomMonAnResponse, NhomMonAnSearchRequest> {
 
     public NhomMonAnController(NhomMonAnService nhomMonAnService) {
