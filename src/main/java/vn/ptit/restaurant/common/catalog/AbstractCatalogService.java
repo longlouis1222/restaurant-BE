@@ -58,6 +58,17 @@ public abstract class AbstractCatalogService<E, ID, CreateReq, UpdateReq, Resp, 
     }
 
     @Override
+    public void deleteMany(List<ID> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return;
+        }
+        List<E> entities = getRepository().findAllById(ids);
+        if (!entities.isEmpty()) {
+            getRepository().deleteAll(entities);
+        }
+    }
+
+    @Override
     public Resp getById(ID id) {
         E entity = getRepository().findById(id)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy entity: " + id));

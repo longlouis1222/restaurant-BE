@@ -38,6 +38,12 @@ public abstract class AbstractCatalogController<ID, CreateReq, UpdateReq, Resp, 
         return ResponseEntity.ok(ApiResponse.builder().success(true).message("Xóa thành công").build());
     }
 
+    @DeleteMapping
+    public ResponseEntity<ApiResponse<?>> deleteMany(@RequestBody List<ID> ids) {
+        service.deleteMany(ids);
+        return ResponseEntity.ok(ApiResponse.builder().success(true).message("Xóa thành công").build());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<Resp>> getById(@PathVariable("id") ID id) {
         Resp res = service.getById(id);

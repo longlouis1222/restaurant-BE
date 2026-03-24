@@ -17,11 +17,14 @@ public class CatalogServiceHelper {
 
     public static Pageable toPageable(BaseSearchRequest req) {
         String sortBy = req.getSortBy();
+        Sort sort;
         if (sortBy == null || sortBy.trim().isEmpty()) {
-            sortBy = "id";
+            // No explicit sort field provided -> unsorted pageable
+            sort = Sort.unsorted();
+        } else {
+            sort = req.getSortDir().equalsIgnoreCase("asc") ?
+                    Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         }
-        Sort sort = req.getSortDir().equalsIgnoreCase("asc") ?
-                Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         return PageRequest.of(req.getPage(), req.getSize(), sort);
     }
 

@@ -12,6 +12,8 @@ public interface CatalogServiceContract<E, ID, CreateReq, UpdateReq, Resp, Searc
 
     void delete(ID id);
 
+    void deleteMany(List<ID> ids);
+
     Resp getById(ID id);
 
     List<Resp> getAll();
