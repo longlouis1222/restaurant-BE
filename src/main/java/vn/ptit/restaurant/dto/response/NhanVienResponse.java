@@ -21,8 +21,8 @@ public class NhanVienResponse {
     private String cccd;
     private String maChucVu;
 
-    // Thông tin chi tiết theo vai trò (nếu có)
-    private NvKhoBepResponse nvKhoBep;
-    private NvPhucVuResponse nvPhucVu;
-    private NvThuNganResponse nvThuNgan;
+    // Thong tin chi tiet theo vai tro (neu co)
+    private NvKhoBepResponse nvKhoBepInfo;
+    private NvPhucVuResponse nvPhucVuInfo;
+    private NvThuNganResponse nvThuNganInfo;
 }

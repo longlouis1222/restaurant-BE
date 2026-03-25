@@ -221,17 +221,17 @@ public class NhanVienServiceImpl extends AbstractCatalogService<
                 .maChucVu(entity.getChucVu() != null ? entity.getChucVu().getMaChucVu() : null);
 
         String maNv = entity.getMaNhanVien();
-        nvKhoBepRepository.findById(maNv).ifPresent(kb -> builder.nvKhoBep(NvKhoBepResponse.builder()
+        nvKhoBepRepository.findById(maNv).ifPresent(kb -> builder.nvKhoBepInfo(NvKhoBepResponse.builder()
                 .maNhanVien(kb.getMaNhanVien())
                 .viTri(kb.getViTri())
                 .trinhDo(kb.getTrinhDo())
                 .build()));
-        nvPhucVuRepository.findById(maNv).ifPresent(pv -> builder.nvPhucVu(NvPhucVuResponse.builder()
+        nvPhucVuRepository.findById(maNv).ifPresent(pv -> builder.nvPhucVuInfo(NvPhucVuResponse.builder()
                 .maNhanVien(pv.getMaNhanVien())
                 .khuVucPhuTrach(pv.getKhuVucPhuTrach())
                 .soLuongBanPhucVu(pv.getSoLuongBanPhucVu())
                 .build()));
-        nvThuNganRepository.findById(maNv).ifPresent(tn -> builder.nvThuNgan(NvThuNganResponse.builder()
+        nvThuNganRepository.findById(maNv).ifPresent(tn -> builder.nvThuNganInfo(NvThuNganResponse.builder()
                 .maNhanVien(tn.getMaNhanVien())
                 .caThuNgan(tn.getCaThuNgan())
                 .tongTienXuLy(tn.getTongTienXuLy())
