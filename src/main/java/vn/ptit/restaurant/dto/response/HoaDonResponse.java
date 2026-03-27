@@ -23,6 +23,7 @@ public class HoaDonResponse {
     @Data
     @Builder
     public static class ChiTietResponse {
+        private String maMon;
         private String tenMon;
         private Integer soLuong;
         private BigDecimal donGia;

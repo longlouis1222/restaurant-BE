@@ -248,6 +248,7 @@ public class HoaDonServiceImpl implements HoaDonService {
                                     : BigDecimal.ZERO;
 
                             return HoaDonResponse.ChiTietResponse.builder()
+                                    .maMon(ct.getMonAn() != null ? ct.getMonAn().getMaMon() : null)
                                     .tenMon(ct.getMonAn() != null ? ct.getMonAn().getTenMon() : null)
                                     .soLuong(ct.getSoLuong())
                                     .donGia(ct.getDonGia())
