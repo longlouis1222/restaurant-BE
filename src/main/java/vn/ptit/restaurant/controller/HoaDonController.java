@@ -30,7 +30,7 @@ public class HoaDonController {
         );
     }
 
-    @PutMapping("/{id}/thanh-toan")
+    @PutMapping("/{maHoaDon}/thanh-toan")
     public ResponseEntity<ApiResponse<?>> thanhToan(@PathVariable String maHoaDon) {
 
         hoaDonService.thanhToan(maHoaDon);

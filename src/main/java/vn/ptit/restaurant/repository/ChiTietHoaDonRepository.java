@@ -10,6 +10,7 @@ import vn.ptit.restaurant.entity.ChiTietHoaDon;
 import vn.ptit.restaurant.entity.id.ChiTietHoaDonId;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface ChiTietHoaDonRepository
         extends JpaRepository<ChiTietHoaDon, ChiTietHoaDonId> {
@@ -40,4 +41,8 @@ public interface ChiTietHoaDonRepository
     Page<MonAnStatisticsResponse> topMonAnByThoiGian(@Param("fromDate") LocalDateTime fromDate,
                                                      @Param("toDate") LocalDateTime toDate,
                                                      Pageable pageable);
+
+    List<ChiTietHoaDon> findByHoaDon_MaHoaDon(String maHoaDon);
+
+    List<ChiTietHoaDon> findByHoaDon_MaHoaDonIn(List<String> maHoaDonList);
 }

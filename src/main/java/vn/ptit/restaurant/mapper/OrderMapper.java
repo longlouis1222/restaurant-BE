@@ -29,6 +29,8 @@ public class OrderMapper {
                 .maHoaDon(hoaDon.getMaHoaDon())
                 .maBan(extractMaBan(hoaDon.getBanAn()))
                 .maKhachHang(hoaDon.getKhachHang() != null ? hoaDon.getKhachHang().getMaKhachHang() : null)
+                .tenKhachHang(hoaDon.getKhachHang() != null ? hoaDon.getKhachHang().getTenKhachHang() : null)
+                .soDienThoaiKhach(hoaDon.getKhachHang() != null ? hoaDon.getKhachHang().getSdt() : null)
                 .maNhanVienPhucVu(hoaDon.getNhanVien() != null ? hoaDon.getNhanVien().getMaNhanVien() : null)
                 .tongTien(hoaDon.getTongTien())
                 .trangThaiHoaDon(hoaDon.getTrangThai() != null ? hoaDon.getTrangThai().name() : null)

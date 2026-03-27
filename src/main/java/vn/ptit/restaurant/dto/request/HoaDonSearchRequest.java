@@ -7,8 +7,8 @@ import java.time.LocalDateTime;
 @Data
 public class HoaDonSearchRequest {
 
-    private Long id;
-    private Long banId;
+    private String id;
+    private String banId;
     private String trangThai;
 
     private LocalDateTime tuNgay;
@@ -19,6 +19,6 @@ public class HoaDonSearchRequest {
 
     private int page = 0;
     private int size = 10;
-    private String sortBy = "thoiGianTao";
+    private String sortBy = "ngayLap";
     private String sortDir = "desc";
 }

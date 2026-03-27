@@ -17,6 +17,10 @@ public class OrderResponse {
     private String maKhachHang;
     private String maNhanVienPhucVu;
 
+    // Thông tin khách
+    private String tenKhachHang;
+    private String soDienThoaiKhach;
+
     private BigDecimal tongTien;
     private String trangThaiHoaDon;
 

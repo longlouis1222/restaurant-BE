@@ -13,17 +13,13 @@
           { "key": "Content-Type", "value": "application/json" }
         ],
         "url": {
-          "raw": "{{baseUrl}}/api/nv-phuc-vu/orders?maBan={{maBan}}&maNhanVienPhucVu={{maNhanVienPhucVu}}",
+          "raw": "{{baseUrl}}/api/hoa-don",
           "host": ["{{baseUrl}}"],
-          "path": ["api", "nv-phuc-vu", "orders"],
-          "query": [
-            { "key": "maBan", "value": "{{maBan}}" },
-            { "key": "maNhanVienPhucVu", "value": "{{maNhanVienPhucVu}}" }
-          ]
+          "path": ["api", "hoa-don"]
         },
         "body": {
           "mode": "raw",
-          "raw": "[\n  { \"maMon\": \"M001\", \"soLuong\": 2 },\n  { \"maMon\": \"M002\", \"soLuong\": 1 }\n]"
+          "raw": "{\n  \"banId\": \"{{maBan}}\",\n  \"tenKhachHang\": \"Khách hàng A\",\n  \"soDienThoai\": \"0123456789\",\n  \"chiTietList\": [\n    {\n      \"monAnId\": \"M001\",\n      \"soLuong\": 2\n    },\n    {\n      \"monAnId\": \"M002\",\n      \"soLuong\": 1\n    }\n  ]\n}"
         }
       },
       "response": []
@@ -36,13 +32,13 @@
           { "key": "Content-Type", "value": "application/json" }
         ],
         "url": {
-          "raw": "{{baseUrl}}/api/nv-phuc-vu/orders/{{maHoaDon}}",
+          "raw": "{{baseUrl}}/api/hoa-don/{{maHoaDon}}",
           "host": ["{{baseUrl}}"],
-          "path": ["api", "nv-phuc-vu", "orders", "{{maHoaDon}}"]
+          "path": ["api", "hoa-don", "{{maHoaDon}}"]
         },
         "body": {
           "mode": "raw",
-          "raw": "[\n  { \"maMon\": \"M001\", \"soLuong\": 1 },\n  { \"maMon\": \"M003\", \"soLuong\": 2 }\n]"
+          "raw": "{\n  \"banId\": \"{{maBan}}\",\n  \"tenKhachHang\": \"Khách hàng A\",\n  \"soDienThoai\": \"0123456789\",\n  \"chiTietList\": [\n    {\n      \"monAnId\": \"M001\",\n      \"soLuong\": 1\n    },\n    {\n      \"monAnId\": \"M003\",\n      \"soLuong\": 2\n    }\n  ]\n}"
         }
       },
       "response": []
@@ -138,14 +134,11 @@
     {
       "name": "9. Thu ngân - thanh toán hóa đơn",
       "request": {
-        "method": "POST",
+        "method": "PUT",
         "url": {
-          "raw": "{{baseUrl}}/api/nv-thu-ngan/bills/{{maHoaDon}}/thanh-toan?maNhanVienThuNgan={{maNhanVienThuNgan}}",
+          "raw": "{{baseUrl}}/api/hoa-don/{{maHoaDon}}/thanh-toan",
           "host": ["{{baseUrl}}"],
-          "path": ["api", "nv-thu-ngan", "bills", "{{maHoaDon}}", "thanh-toan"],
-          "query": [
-            { "key": "maNhanVienThuNgan", "value": "{{maNhanVienThuNgan}}" }
-          ]
+          "path": ["api", "hoa-don", "{{maHoaDon}}", "thanh-toan"]
         }
       },
       "response": []

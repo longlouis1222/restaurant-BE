@@ -16,12 +16,14 @@ import vn.ptit.restaurant.dto.response.PageResponse;
 import vn.ptit.restaurant.entity.BanAn;
 import vn.ptit.restaurant.entity.ChiTietHoaDon;
 import vn.ptit.restaurant.entity.HoaDon;
+import vn.ptit.restaurant.entity.KhachHang;
 import vn.ptit.restaurant.entity.MonAn;
 import vn.ptit.restaurant.entity.id.ChiTietHoaDonId;
 import vn.ptit.restaurant.exception.NotFoundException;
 import vn.ptit.restaurant.repository.BanAnRepository;
 import vn.ptit.restaurant.repository.ChiTietHoaDonRepository;
 import vn.ptit.restaurant.repository.HoaDonRepository;
+import vn.ptit.restaurant.repository.KhachHangRepository;
 import vn.ptit.restaurant.repository.MonAnRepository;
 import vn.ptit.restaurant.service.HoaDonService;
 
@@ -42,12 +44,32 @@ public class HoaDonServiceImpl implements HoaDonService {
     private final BanAnRepository banAnRepository;
     private final MonAnRepository monAnRepository;
     private final ChiTietHoaDonRepository chiTietHoaDonRepository;
+    private final KhachHangRepository khachHangRepository;
 
     @Override
     public HoaDonResponse taoHoaDon(TaoHoaDonRequest request) {
 
         BanAn banAn = banAnRepository.findById(request.getBanId())
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy bàn"));
+
+        // Xử lý KhachHang: tìm hoặc tạo mới theo SĐT
+        KhachHang khachHang = null;
+        if (request.getSoDienThoai() != null && !request.getSoDienThoai().trim().isEmpty()) {
+            // Tìm khách hàng theo SĐT
+            khachHang = khachHangRepository.findBySdt(request.getSoDienThoai()).orElse(null);
+
+            // Nếu không tìm thấy, tạo mới
+            if (khachHang == null) {
+                String newKhachHangId = CodeGenerator.generateCode("KH", 10);
+                khachHang = KhachHang.builder()
+                        .maKhachHang(newKhachHangId)
+                        .tenKhachHang(request.getTenKhachHang() != null ? request.getTenKhachHang() : "Khách")
+                        .sdt(request.getSoDienThoai())
+                        .diemTichLuy(BigDecimal.ZERO)
+                        .build();
+                khachHangRepository.save(khachHang);
+            }
+        }
 
         // 2️⃣ Lấy danh sách id món ăn
         List<String> monAnIds = request.getChiTietList()
@@ -66,6 +88,7 @@ public class HoaDonServiceImpl implements HoaDonService {
         String newId = CodeGenerator.generateCode("HD", 10);
         HoaDon hoaDon = HoaDon.builder()
                 .maHoaDon(newId)
+                .khachHang(khachHang)
                 .trangThai(HoaDon.TrangThaiHoaDon.NEW)
                 .ngayLap(LocalDateTime.now())
                 .banAn(banAn)
@@ -174,9 +197,19 @@ public class HoaDonServiceImpl implements HoaDonService {
 
         Page<HoaDon> pageResult = hoaDonRepository.findAll(specification, pageable);
 
-        List<HoaDonResponse> content = pageResult.getContent()
-                .stream()
-                .map(this::mapToResponse)
+        List<HoaDon> hoaDons = pageResult.getContent();
+
+        List<String> maHoaDonList = hoaDons.stream()
+                .map(HoaDon::getMaHoaDon)
+                .collect(Collectors.toList());
+
+        Map<String, List<ChiTietHoaDon>> chiTietByHoaDon = maHoaDonList.isEmpty()
+                ? java.util.Collections.emptyMap()
+                : chiTietHoaDonRepository.findByHoaDon_MaHoaDonIn(maHoaDonList).stream()
+                .collect(Collectors.groupingBy(ct -> ct.getHoaDon().getMaHoaDon()));
+
+        List<HoaDonResponse> content = hoaDons.stream()
+                .map(hd -> mapToResponse(hd, chiTietByHoaDon.get(hd.getMaHoaDon())))
                 .collect(Collectors.toList());
 
         return PageResponse.<HoaDonResponse>builder()
@@ -189,10 +222,42 @@ public class HoaDonServiceImpl implements HoaDonService {
     }
 
     private HoaDonResponse mapToResponse(HoaDon h) {
+        // Dùng cho các chỗ gọi lẻ (ví dụ tạo mới xong trả về 1 hóa đơn)
+        List<ChiTietHoaDon> chiTietEntities = chiTietHoaDonRepository.findByHoaDon_MaHoaDon(h.getMaHoaDon());
+        return mapToResponse(h, chiTietEntities);
+    }
+
+    private HoaDonResponse mapToResponse(HoaDon h, List<ChiTietHoaDon> chiTietEntities) {
         HoaDonResponse response = new HoaDonResponse();
         response.setMaHoaDon(h.getMaHoaDon());
         response.setTrangThai(h.getTrangThai().name());
         response.setTongTien(h.getTongTien());
+
+        // Thêm thông tin khách hàng
+        if (h.getKhachHang() != null) {
+            response.setTenKhachHang(h.getKhachHang().getTenKhachHang());
+            response.setSoDienThoai(h.getKhachHang().getSdt());
+        }
+
+        List<HoaDonResponse.ChiTietResponse> chiTietList =
+                (chiTietEntities == null ? java.util.Collections.<ChiTietHoaDon>emptyList() : chiTietEntities)
+                        .stream()
+                        .map(ct -> {
+                            BigDecimal thanhTien = (ct.getDonGia() != null && ct.getSoLuong() != null)
+                                    ? ct.getDonGia().multiply(BigDecimal.valueOf(ct.getSoLuong()))
+                                    : BigDecimal.ZERO;
+
+                            return HoaDonResponse.ChiTietResponse.builder()
+                                    .tenMon(ct.getMonAn() != null ? ct.getMonAn().getTenMon() : null)
+                                    .soLuong(ct.getSoLuong())
+                                    .donGia(ct.getDonGia())
+                                    .thanhTien(thanhTien)
+                                    .build();
+                        })
+                        .collect(Collectors.toList());
+
+        response.setChiTietList(chiTietList);
+
         return response;
     }
 }
