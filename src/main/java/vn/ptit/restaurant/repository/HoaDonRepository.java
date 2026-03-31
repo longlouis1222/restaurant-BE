@@ -74,5 +74,16 @@ public interface HoaDonRepository
             "GROUP BY h.nhanVien.maNhanVien, h.nhanVien.tenNhanVien")
     List<Object[]> demKhachTheoNhanVienTrongThang(@Param("nam") int nam,
                                                   @Param("thang") int thang);
-}
 
+    // Lấy danh sách hóa đơn theo bàn và danh sách trạng thái, mới nhất trước
+    List<HoaDon> findByBanAn_MaBanAndTrangThaiInOrderByNgayLapDesc(
+            String maBan,
+            List<HoaDon.TrangThaiHoaDon> trangThais
+    );
+
+    // Lấy danh sách hóa đơn theo danh sách bàn và danh sách trạng thái, sắp xếp theo bàn và ngày lập giảm dần
+    List<HoaDon> findByBanAn_MaBanInAndTrangThaiInOrderByBanAn_MaBanAscNgayLapDesc(
+            List<String> maBans,
+            List<HoaDon.TrangThaiHoaDon> trangThais
+    );
+}

@@ -61,13 +61,14 @@ public class HoaDonServiceImpl implements HoaDonService {
             // Nếu không tìm thấy, tạo mới
             if (khachHang == null) {
                 String newKhachHangId = CodeGenerator.generateCode("KH", 10);
-                khachHang = KhachHang.builder()
+                KhachHang newKh = KhachHang.builder()
                         .maKhachHang(newKhachHangId)
                         .tenKhachHang(request.getTenKhachHang() != null ? request.getTenKhachHang() : "Khách")
                         .sdt(request.getSoDienThoai())
                         .diemTichLuy(BigDecimal.ZERO)
                         .build();
-                khachHangRepository.save(khachHang);
+                // Gán lại khachHang bằng entity đã được save (managed)
+                khachHang = khachHangRepository.save(newKh);
             }
         }
 
@@ -147,6 +148,8 @@ public class HoaDonServiceImpl implements HoaDonService {
 
         hoaDon.setTrangThai(HoaDon.TrangThaiHoaDon.PAID);
 
+        // Khi hóa đơn được thanh toán, bàn sẽ được trả về trạng thái AVAILABLE
+        // => Đảm bảo luồng trạng thái bàn được reset sau khi thanh toán xong
         hoaDon.getBanAn().setTrangThai(BanAn.TrangThaiBan.AVAILABLE);
     }
 
@@ -203,10 +206,14 @@ public class HoaDonServiceImpl implements HoaDonService {
                 .map(HoaDon::getMaHoaDon)
                 .collect(Collectors.toList());
 
-        Map<String, List<ChiTietHoaDon>> chiTietByHoaDon = maHoaDonList.isEmpty()
-                ? java.util.Collections.emptyMap()
-                : chiTietHoaDonRepository.findByHoaDon_MaHoaDonIn(maHoaDonList).stream()
-                .collect(Collectors.groupingBy(ct -> ct.getHoaDon().getMaHoaDon()));
+        Map<String, List<ChiTietHoaDon>> chiTietByHoaDon;
+        if (maHoaDonList.isEmpty()) {
+            chiTietByHoaDon = java.util.Collections.emptyMap();
+        } else {
+            List<ChiTietHoaDon> allChiTiet = chiTietHoaDonRepository.findByHoaDon_MaHoaDonIn(maHoaDonList);
+            chiTietByHoaDon = allChiTiet.stream()
+                    .collect(Collectors.groupingBy(ct -> ct.getHoaDon().getMaHoaDon()));
+        }
 
         List<HoaDonResponse> content = hoaDons.stream()
                 .map(hd -> mapToResponse(hd, chiTietByHoaDon.get(hd.getMaHoaDon())))
@@ -221,6 +228,92 @@ public class HoaDonServiceImpl implements HoaDonService {
                 .build();
     }
 
+    @Override
+    public HoaDonResponse capNhatHoaDon(String maHoaDon, TaoHoaDonRequest request) {
+
+        HoaDon hoaDon = hoaDonRepository.findById(maHoaDon)
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy hóa đơn"));
+
+        // Cập nhật bàn nếu có thay đổi banId
+        if (request.getBanId() != null && !request.getBanId().equals(hoaDon.getBanAn().getMaBan())) {
+            BanAn banAnMoi = banAnRepository.findById(request.getBanId())
+                    .orElseThrow(() -> new NotFoundException("Không tìm thấy bàn"));
+            hoaDon.setBanAn(banAnMoi);
+        }
+
+        // Xử lý khách hàng: tìm hoặc tạo mới theo SĐT (giống logic tạo hóa đơn)
+        KhachHang khachHang = hoaDon.getKhachHang();
+        if (request.getSoDienThoai() != null && !request.getSoDienThoai().trim().isEmpty()) {
+            khachHang = khachHangRepository.findBySdt(request.getSoDienThoai()).orElse(null);
+            if (khachHang == null) {
+                String newKhachHangId = CodeGenerator.generateCode("KH", 10);
+                KhachHang newKh = KhachHang.builder()
+                        .maKhachHang(newKhachHangId)
+                        .tenKhachHang(request.getTenKhachHang() != null ? request.getTenKhachHang() : "Khách")
+                        .sdt(request.getSoDienThoai())
+                        .diemTichLuy(BigDecimal.ZERO)
+                        .build();
+                // Gán lại khachHang bằng entity đã được save (managed)
+                khachHang = khachHangRepository.save(newKh);
+            }
+        }
+        hoaDon.setKhachHang(khachHang);
+
+        // Xóa toàn bộ chi tiết cũ
+        chiTietHoaDonRepository.deleteAllByHoaDon_MaHoaDon(maHoaDon);
+
+        // Nếu không có chi tiết mới, đặt tổng tiền = 0 và trả về
+        if (request.getChiTietList() == null || request.getChiTietList().isEmpty()) {
+            hoaDon.setTongTien(BigDecimal.ZERO);
+            hoaDonRepository.save(hoaDon);
+            return mapToResponse(hoaDon);
+        }
+
+        // Lấy danh sách id món ăn mới
+        List<String> monAnIds = request.getChiTietList().stream()
+                .map(TaoHoaDonRequest.ChiTietRequest::getMonAnId)
+                .collect(Collectors.toList());
+
+        List<MonAn> monAns = monAnRepository.findAllById(monAnIds);
+        Map<String, MonAn> monAnMap = monAns.stream()
+                .collect(Collectors.toMap(MonAn::getMaMon, m -> m));
+
+        BigDecimal tongTien = BigDecimal.ZERO;
+
+        // Tạo lại chi tiết hóa đơn
+        for (TaoHoaDonRequest.ChiTietRequest ct : request.getChiTietList()) {
+            MonAn monAn = monAnMap.get(ct.getMonAnId());
+            if (monAn == null) {
+                throw new RuntimeException("Món ăn không tồn tại: " + ct.getMonAnId());
+            }
+
+            BigDecimal thanhTien = monAn.getDonGia()
+                    .multiply(BigDecimal.valueOf(ct.getSoLuong()));
+
+            ChiTietHoaDonId id = new ChiTietHoaDonId(
+                    hoaDon.getMaHoaDon(),
+                    monAn.getMaMon()
+            );
+
+            ChiTietHoaDon chiTiet = ChiTietHoaDon.builder()
+                    .id(id)
+                    .hoaDon(hoaDon)
+                    .monAn(monAn)
+                    .soLuong(ct.getSoLuong())
+                    .donGia(monAn.getDonGia())
+                    .build();
+
+            chiTietHoaDonRepository.save(chiTiet);
+
+            tongTien = tongTien.add(thanhTien);
+        }
+
+        hoaDon.setTongTien(tongTien);
+        hoaDonRepository.save(hoaDon);
+
+        return mapToResponse(hoaDon);
+    }
+
     private HoaDonResponse mapToResponse(HoaDon h) {
         // Dùng cho các chỗ gọi lẻ (ví dụ tạo mới xong trả về 1 hóa đơn)
         List<ChiTietHoaDon> chiTietEntities = chiTietHoaDonRepository.findByHoaDon_MaHoaDon(h.getMaHoaDon());
@@ -232,6 +325,7 @@ public class HoaDonServiceImpl implements HoaDonService {
         response.setMaHoaDon(h.getMaHoaDon());
         response.setTrangThai(h.getTrangThai().name());
         response.setTongTien(h.getTongTien());
+        response.setNgayLap(h.getNgayLap());
 
         // Thêm thông tin khách hàng
         if (h.getKhachHang() != null) {

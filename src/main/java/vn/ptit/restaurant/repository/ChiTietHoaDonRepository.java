@@ -44,5 +44,9 @@ public interface ChiTietHoaDonRepository
 
     List<ChiTietHoaDon> findByHoaDon_MaHoaDon(String maHoaDon);
 
+    // Lấy toàn bộ chi tiết hóa đơn theo danh sách mã hoá đơn (dùng để tránh N+1 query)
     List<ChiTietHoaDon> findByHoaDon_MaHoaDonIn(List<String> maHoaDonList);
+
+    // Xóa toàn bộ chi tiết theo mã hóa đơn (dùng cho cập nhật hóa đơn)
+    void deleteAllByHoaDon_MaHoaDon(String maHoaDon);
 }

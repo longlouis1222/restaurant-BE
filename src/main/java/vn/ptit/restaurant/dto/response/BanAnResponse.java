@@ -16,4 +16,9 @@ public class BanAnResponse {
     private String khuVuc;
     private Integer tanSuatSuDung;
     private BanAn.TrangThaiBan trangThai;
+
+    // Thông tin hóa đơn hiện tại của bàn (nếu có)
+    private String maHoaDon;
+    private String tenKhach;
+    private java.math.BigDecimal tongTienHoaDon;
 }

@@ -9,6 +9,8 @@ public interface HoaDonService {
 
     HoaDonResponse taoHoaDon(TaoHoaDonRequest request);
 
+    HoaDonResponse capNhatHoaDon(String maHoaDon, TaoHoaDonRequest request);
+
     void thanhToan(String maHoaDon);
 
     PageResponse<HoaDonResponse> search(HoaDonSearchRequest request);

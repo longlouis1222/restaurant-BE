@@ -30,6 +30,23 @@ public class HoaDonController {
         );
     }
 
+    // Cập nhật thông tin hóa đơn (bàn, khách, chi tiết món)
+    @PutMapping("/{maHoaDon}")
+    public ResponseEntity<ApiResponse<HoaDonResponse>> update(
+            @PathVariable String maHoaDon,
+            @RequestBody TaoHoaDonRequest request) {
+
+        HoaDonResponse updated = hoaDonService.capNhatHoaDon(maHoaDon, request);
+
+        return ResponseEntity.ok(
+                ApiResponse.<HoaDonResponse>builder()
+                        .success(true)
+                        .message("Cập nhật hóa đơn thành công")
+                        .data(updated)
+                        .build()
+        );
+    }
+
     @PutMapping("/{maHoaDon}/thanh-toan")
     public ResponseEntity<ApiResponse<?>> thanhToan(@PathVariable String maHoaDon) {
 
