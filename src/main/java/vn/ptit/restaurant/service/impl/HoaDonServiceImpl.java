@@ -72,20 +72,20 @@ public class HoaDonServiceImpl implements HoaDonService {
             }
         }
 
-        // 2️⃣ Lấy danh sách id món ăn
+        // 2 Lấy danh sách id món ăn
         List<String> monAnIds = request.getChiTietList()
                 .stream()
                 .map(TaoHoaDonRequest.ChiTietRequest::getMonAnId)
                 .collect(Collectors.toList());
 
-        // 3️⃣ Query tất cả món ăn
+        // 3 Query tất cả món ăn
         List<MonAn> monAns = monAnRepository.findAllById(monAnIds);
 
         // Map để tìm nhanh theo id
         Map<String, MonAn> monAnMap = monAns.stream()
                 .collect(Collectors.toMap(MonAn::getMaMon, m -> m));
 
-        // 4️⃣ Tạo hóa đơn
+        // 4 Tạo hóa đơn
         String newId = CodeGenerator.generateCode("HD", 10);
         HoaDon hoaDon = HoaDon.builder()
                 .maHoaDon(newId)
@@ -100,7 +100,7 @@ public class HoaDonServiceImpl implements HoaDonService {
 
         BigDecimal tongTien = BigDecimal.ZERO;
 
-        // 5️⃣ Tạo chi tiết hóa đơn
+        // 5 Tạo chi tiết hóa đơn
         for (TaoHoaDonRequest.ChiTietRequest ct : request.getChiTietList()) {
 
             MonAn monAn = monAnMap.get(ct.getMonAnId());
@@ -130,7 +130,7 @@ public class HoaDonServiceImpl implements HoaDonService {
             tongTien = tongTien.add(thanhTien);
         }
 
-        // 6️⃣ Update tổng tiền
+        // 6 Update tổng tiền
         hoaDon.setTongTien(tongTien);
         hoaDonRepository.save(hoaDon);
 

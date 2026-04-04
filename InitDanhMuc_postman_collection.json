@@ -2,7 +2,7 @@
   "info": {
     "name": "Init Danh Muc Data",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Collection tạo dữ liệu danh mục ban đầu cho hệ thống nhà hàng (Luong, ChucVu, BanAn, NhomMonAn, NhaCungCap, NguyenLieu, KhachHang, MonAn)."
+    "description": "Collection tạo dữ liệu danh mục ban đầu cho hệ thống nhà hàng (Luong, ChucVu, BanAn, NhomMonAn, NhaCungCap, NguyenLieu, KhachHang, MonAn, PhieuNhap)."
   },
   "item": [
     {
@@ -280,12 +280,61 @@
           "raw": "{\n  \"tenMon\": \"Salad rau\",\n  \"donGia\": 60000,\n  \"thoiGianCheBien\": 10,\n  \"maNhomMon\": \"{{maNhomMonKhaiVi}}\"\n}"
         }
       }
+    },
+    {
+      "name": "17. Tạo phiếu nhập: Nhập thịt bò từ NCC tổng hợp (không set maPhieuNhap, server tự gen)",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "url": {
+          "raw": "{{baseUrl}}/api/phieu-nhap",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "phieu-nhap"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"maNcc\": \"{{maNccTongHop}}\",\n  \"maNhanVien\": \"{{maNhanVienThuNgan}}\",\n  \"ngayNhap\": \"{{ngayNhapHienTai}}\",\n  \"chiTietList\": [\n    {\n      \"maNguyenLieu\": \"{{maNguyenLieuThitBo}}\",\n      \"soLuong\": 10,\n      \"donGia\": 200000\n    }\n  ]\n}"
+        }
+      }
+    },
+    {
+      "name": "18. Tạo phiếu nhập: Nhập rau xà lách từ NCC tổng hợp",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "url": {
+          "raw": "{{baseUrl}}/api/phieu-nhap",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "phieu-nhap"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"maNcc\": \"{{maNccTongHop}}\",\n  \"maNhanVien\": \"{{maNhanVienThuNgan}}\",\n  \"ngayNhap\": \"{{ngayNhapHienTai}}\",\n  \"chiTietList\": [\n    {\n      \"maNguyenLieu\": \"{{maNguyenLieuRauXaLach}}\",\n      \"soLuong\": 20,\n      \"donGia\": 50000\n    }\n  ]\n}"
+        }
+      }
+    },
+    {
+      "name": "19. Lấy danh sách phiếu nhập (search all)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/phieu-nhap",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "phieu-nhap"]
+        }
+      }
     }
   ],
   "variable": [
     { "key": "baseUrl", "value": "http://localhost:8080" },
     { "key": "maLuongDemo", "value": "" },
     { "key": "maNhomMonChinh", "value": "" },
-    { "key": "maNhomMonKhaiVi", "value": "" }
+    { "key": "maNhomMonKhaiVi", "value": "" },
+    { "key": "maNccTongHop", "value": "" },
+    { "key": "maNguyenLieuThitBo", "value": "" },
+    { "key": "maNguyenLieuRauXaLach", "value": "" },
+    { "key": "maNhanVienThuNgan", "value": "" },
+    { "key": "ngayNhapHienTai", "value": "2024-01-01T10:00:00" }
   ]
 }

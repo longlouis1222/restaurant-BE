@@ -16,6 +16,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -117,34 +118,87 @@ public class BaoCaoServiceImpl implements BaoCaoService {
             tongKhach = 0L;
         }
 
+        // ================= OLD LOGIC (theo nhân viên phục vụ thực tế) =================
         // 2. Lấy phân bổ số khách theo từng nhân viên
-        List<Object[]> raw = hoaDonRepository.demKhachTheoNhanVienTrongThang(nam, thang);
+        // List<Object[]> raw = hoaDonRepository.demKhachTheoNhanVienTrongThang(nam, thang);
+        //
+        // List<LuongNhanVienResponse> result = new ArrayList<>();
+        //
+        // for (Object[] row : raw) {
+        //     String maNhanVien = (String) row[0];
+        //     String tenNhanVien = (String) row[1];
+        //
+        //     Long soKhachNhanVienPhucVu;
+        //     if (row[2] instanceof Long) {
+        //         soKhachNhanVienPhucVu = (Long) row[2];
+        //     } else if (row[2] instanceof Number) {
+        //         soKhachNhanVienPhucVu = ((Number) row[2]).longValue();
+        //     } else {
+        //         soKhachNhanVienPhucVu = 0L;
+        //     }
+        //
+        //     Optional<NhanVien> nvOpt = nhanVienRepository.findById(maNhanVien);
+        //     if (!nvOpt.isPresent()) {
+        //         continue;
+        //     }
+        //     NhanVien nv = nvOpt.get();
+        //     ChucVu chucVu = nv.getChucVu();
+        //     if (chucVu == null) {
+        //         continue;
+        //     }
+        //
+        //     String maChucVu = chucVu.getMaChucVu();
+        //     String tenChucVu = chucVu.getTenChucVu();
+        //
+        //     // Lấy lương cơ bản từ bảng luong thông qua quan hệ ChucVu.luong
+        //     Luong luongEntity = chucVu.getLuong();
+        //     BigDecimal luongCoBan = (luongEntity != null && luongEntity.getMucLuong() != null)
+        //             ? luongEntity.getMucLuong()
+        //             : BigDecimal.ZERO;
+        //
+        //     // Công thức thưởng: (Tổng khách / 10) * 2% * Lương cơ bản
+        //     long soBlock10Khach = tongKhach / 10; // dùng tổng khách toàn nhà hàng trong tháng
+        //     BigDecimal heSoThuong = new BigDecimal("0.02");
+        //     BigDecimal thuong = luongCoBan
+        //             .multiply(heSoThuong)
+        //             .multiply(BigDecimal.valueOf(soBlock10Khach))
+        //             .setScale(0, RoundingMode.HALF_UP);
+        //
+        //     // Lương thực nhận = Lương cơ bản + Thưởng
+        //     BigDecimal luongThucNhan = luongCoBan.add(thuong);
+        //
+        //     result.add(new LuongNhanVienResponse(
+        //             maNhanVien,
+        //             tenNhanVien,
+        //             maChucVu,
+        //             tenChucVu,
+        //             luongCoBan,
+        //             soKhachNhanVienPhucVu,
+        //             thuong,
+        //             luongThucNhan
+        //     ));
+        // }
 
+        // ================= NEW LOGIC: tính cho TẤT CẢ nhân viên đang tồn tại =================
+        List<NhanVien> nhanViens = nhanVienRepository.findAll();
         List<LuongNhanVienResponse> result = new ArrayList<>();
 
-        for (Object[] row : raw) {
-            String maNhanVien = (String) row[0];
-            String tenNhanVien = (String) row[1];
+        // Số block 10 khách dùng chung cho toàn bộ nhân viên
+        long soBlock10Khach = tongKhach / 10; // dùng tổng khách toàn nhà hàng trong tháng
+        BigDecimal heSoThuong = new BigDecimal("0.02");
 
-            Long soKhachNhanVienPhucVu;
-            if (row[2] instanceof Long) {
-                soKhachNhanVienPhucVu = (Long) row[2];
-            } else if (row[2] instanceof Number) {
-                soKhachNhanVienPhucVu = ((Number) row[2]).longValue();
-            } else {
-                soKhachNhanVienPhucVu = 0L;
-            }
-
-            Optional<NhanVien> nvOpt = nhanVienRepository.findById(maNhanVien);
-            if (!nvOpt.isPresent()) {
+        for (NhanVien nv : nhanViens) {
+            if (nv == null) {
                 continue;
             }
-            NhanVien nv = nvOpt.get();
             ChucVu chucVu = nv.getChucVu();
             if (chucVu == null) {
+                // Nếu nhân viên chưa gán chức vụ thì bỏ qua để tránh NullPointer
                 continue;
             }
 
+            String maNhanVien = nv.getMaNhanVien();
+            String tenNhanVien = nv.getTenNhanVien();
             String maChucVu = chucVu.getMaChucVu();
             String tenChucVu = chucVu.getTenChucVu();
 
@@ -155,8 +209,6 @@ public class BaoCaoServiceImpl implements BaoCaoService {
                     : BigDecimal.ZERO;
 
             // Công thức thưởng: (Tổng khách / 10) * 2% * Lương cơ bản
-            long soBlock10Khach = tongKhach / 10; // dùng tổng khách toàn nhà hàng trong tháng
-            BigDecimal heSoThuong = new BigDecimal("0.02");
             BigDecimal thuong = luongCoBan
                     .multiply(heSoThuong)
                     .multiply(BigDecimal.valueOf(soBlock10Khach))
@@ -164,6 +216,9 @@ public class BaoCaoServiceImpl implements BaoCaoService {
 
             // Lương thực nhận = Lương cơ bản + Thưởng
             BigDecimal luongThucNhan = luongCoBan.add(thuong);
+
+            // Theo yêu cầu mới: chỉ cần nhân viên tồn tại là trả ra, không phụ thuộc số khách nhân viên phục vụ
+            Long soKhachNhanVienPhucVu = 0L;
 
             result.add(new LuongNhanVienResponse(
                     maNhanVien,
@@ -194,25 +249,35 @@ public class BaoCaoServiceImpl implements BaoCaoService {
         // Lấy danh sách chi phí theo ngày
         List<ChiPhiNgayResponse> chiPhiList = chiPhiTheoNgay(fromDate, toDate);
 
-        // Đưa về map theo ngày để dễ kết hợp
+        // Đưa về map theo ngày để dễ kết hợp - dùng Date để tránh phải gọi toInstant() trên Date
         Map<Date, BigDecimal> doanhThuByDate = new HashMap<>();
         for (DoanhThuTheoNgayResponse d : doanhThuList) {
-            doanhThuByDate.put(d.getNgay(), d.getDoanhThu());
+            Date ngayDate = d.getNgay();
+            if (ngayDate == null) continue;
+            doanhThuByDate.put(ngayDate, d.getDoanhThu());
         }
 
         Map<Date, BigDecimal> chiPhiByDate = new HashMap<>();
         for (ChiPhiNgayResponse c : chiPhiList) {
-            chiPhiByDate.put(c.getNgay(), c.getTongChiPhi());
+            Date ngayDate = c.getNgay();
+            if (ngayDate == null) continue;
+            chiPhiByDate.put(ngayDate, c.getTongChiPhi());
         }
 
         List<LoiNhuanNgayResponse> result = new ArrayList<>();
 
         LocalDate current = fromDate;
         while (!current.isAfter(toDate)) {
-            BigDecimal doanhThu = doanhThuByDate.getOrDefault(current, BigDecimal.ZERO);
-            BigDecimal chiPhi = chiPhiByDate.getOrDefault(current, BigDecimal.ZERO);
+            // Convert LocalDate -> Date để tra trong map
+            Date currentDate = Date.from(current.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+            BigDecimal doanhThu = doanhThuByDate.getOrDefault(currentDate, BigDecimal.ZERO);
+            BigDecimal chiPhi = chiPhiByDate.getOrDefault(currentDate, BigDecimal.ZERO);
             BigDecimal loiNhuan = doanhThu.subtract(chiPhi);
+
+            // Trả về LocalDate trong response như cũ
             result.add(new LoiNhuanNgayResponse(current, doanhThu, chiPhi, loiNhuan));
+
             current = current.plusDays(1);
         }
 
